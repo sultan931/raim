@@ -72,8 +72,11 @@ function isWelcomeMessage(message: DiaryMessage) {
     message.id === welcomeId ||
     message.id === legacyWelcomeId ||
     lowerText.includes('i am lumi') ||
+    lowerText.includes('i am jay') ||
     lowerText.includes('i am fenna') ||
+    lowerText.includes('я jay') ||
     lowerText.includes('я фенна') ||
+    lowerText.includes('мен jay') ||
     lowerText.includes('мен феннамын')
   );
 }

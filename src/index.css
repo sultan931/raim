@@ -1,17 +1,23 @@
 :root {
-  --bg: #f5f4ef;
-  --card: #fbfaf7;
-  --ink: #1a1a1a;
-  --soft: #5b5854;
-  --clay: #d97757;
-  --line: #e6e3da;
+  --bg: #101413;
+  --card: #171d1b;
+  --ink: #f2eee8;
+  --soft: #a9b3ad;
+  --clay: #d8845f;
+  --line: #2b3531;
+  --field: #0d1110;
+  --mint: #8fc7b4;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: var(--ink);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body { background: var(--bg); }
+body {
+  background:
+    radial-gradient(circle at top left, rgba(216, 132, 95, 0.14), transparent 32vw),
+    linear-gradient(180deg, #101413 0%, #0b0e0d 100%);
+}
 
 .container {
   max-width: 560px;
@@ -33,7 +39,7 @@ body { background: var(--bg); }
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
 }
 
 .card h2 { font-size: 22px; margin-bottom: 16px; }
@@ -47,7 +53,7 @@ input {
   border: 1px solid var(--line);
   border-radius: 12px;
   font-size: 16px;
-  background: #fff;
+  background: var(--field);
   color: var(--ink);
 }
 
@@ -56,7 +62,7 @@ button {
   border: none;
   border-radius: 12px;
   background: var(--clay);
-  color: #fff;
+  color: #18110e;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -65,7 +71,7 @@ button:disabled { opacity: 0.6; cursor: default; }
 
 button.ghost {
   background: transparent;
-  color: var(--soft);
+  color: var(--mint);
   font-weight: 500;
 }
 button.small { padding: 6px 10px; font-size: 14px; }
@@ -80,7 +86,7 @@ button.small { padding: 6px 10px; font-size: 14px; }
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  background: #fff;
+  background: var(--field);
   border: 1px solid var(--line);
   border-radius: 12px;
 }

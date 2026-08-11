@@ -1,110 +1,20 @@
 .buddy-avatar {
-  position: relative;
   overflow: hidden;
-  min-height: 244px;
-  padding: 24px;
+  min-height: 286px;
+  padding: 14px 14px 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: linear-gradient(180deg, #fff7ec 0%, #fffdf8 100%);
+  background: radial-gradient(circle at 50% 18%, #263532 0%, #121716 70%);
   text-align: center;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
 }
 
-.buddy-avatar__sparkle {
-  position: absolute;
-  top: 20px;
-  right: 24px;
-  width: 18px;
-  height: 18px;
-  rotate: 45deg;
-  border-radius: 4px;
-  background: #f4c96d;
-}
-
-.buddy-avatar__ears {
-  display: flex;
-  justify-content: center;
-  gap: 58px;
-}
-
-.buddy-avatar__ear {
-  position: relative;
-  width: 58px;
-  height: 72px;
-  border: 1px solid #b9573f;
-  border-radius: 58% 58% 14px 14px;
-  background: #d96f4f;
-}
-
-.buddy-avatar__ear::after {
-  position: absolute;
-  inset: 13px 12px 10px;
-  content: '';
-  border-radius: inherit;
-  background: #ffd8c4;
-}
-
-.buddy-avatar__ear.left {
-  rotate: -14deg;
-}
-
-.buddy-avatar__ear.right {
-  rotate: 14deg;
-}
-
-.buddy-avatar__face {
-  position: relative;
-  width: 144px;
-  height: 132px;
-  margin: -20px auto 16px;
-  border: 1px solid #b9573f;
-  border-radius: 48% 48% 46% 46%;
-  background: #e68357;
-  padding-top: 44px;
-  box-shadow: inset 0 -18px 0 #fff2de;
-}
-
-.buddy-avatar__cheeks {
-  position: absolute;
-  right: 18px;
-  bottom: 34px;
-  left: 18px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.buddy-avatar__cheeks span {
-  width: 20px;
-  height: 10px;
-  border-radius: 50%;
-  background: #f4a18b;
-}
-
-.buddy-avatar__eyes {
-  display: flex;
-  justify-content: center;
-  gap: 34px;
-}
-
-.buddy-avatar__eyes span,
-.buddy-avatar__nose {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #24201d;
-}
-
-.buddy-avatar__nose {
-  width: 15px;
-  height: 12px;
-  margin: 20px auto 0;
-}
-
-.buddy-avatar__muzzle {
-  width: 28px;
-  height: 10px;
-  margin: 4px auto 0;
-  border-bottom: 2px solid #24201d;
-  border-radius: 50%;
+.buddy-avatar img {
+  display: block;
+  width: min(100%, 230px);
+  aspect-ratio: 1;
+  margin: 0 auto 10px;
+  object-fit: contain;
 }
 
 .buddy-avatar p {

@@ -5,7 +5,7 @@
   padding: 5px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--field);
 }
 
 .privacy-toggle button {
@@ -16,6 +16,6 @@
 }
 
 .privacy-toggle button.active {
-  background: #e4f0eb;
-  color: #1d3f38;
+  background: #19362f;
+  color: #d7fff0;
 }

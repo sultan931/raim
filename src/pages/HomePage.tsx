@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
+import { AlbumButton } from '../components/AlbumButton';
 import { BuddyAvatar } from '../components/BuddyAvatar';
 import { ChatComposer } from '../components/ChatComposer';
 import { ChatThread } from '../components/ChatThread';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { ParentHintCard } from '../components/ParentHintCard';
-import { askFenna } from '../lib/diaryAi';
+import { askJey } from '../lib/diaryAi';
 import { saveRecording } from '../lib/audioStore';
+import { createAlbumMoment, saveAlbumMoment } from '../lib/album';
 import {
   hydrateAudioUrls,
   languageStorageKey,
@@ -61,10 +63,11 @@ export function HomePage() {
 
     const childMessage = createMessage('child', entryText, privacy, audioId);
     setMessages((current) => [...current, childMessage]);
+    saveAlbumMoment(createAlbumMoment(entryText, privacy, language));
     setText('');
     setRecording(null);
 
-    const reply = await askFenna(entryText, privacy, language);
+    const reply = await askJey(entryText, privacy, language);
     setMessages((current) => [...current, createMessage('buddy', reply.text, 'mine')]);
     setParentHint(reply.parentHint);
     setIsSending(false);
@@ -80,6 +83,7 @@ export function HomePage() {
         </div>
         <div className="hero-side">
           <LanguageSelector value={language} onChange={setLanguage} />
+          <AlbumButton label={t.albumsButton} />
           <BuddyAvatar moodLabel={moodLabel} />
         </div>
       </section>

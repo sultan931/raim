@@ -1,7 +1,7 @@
 import type { BuddyReply, PrivacyMode } from './diaryTypes';
 import type { Language } from './language';
 
-type Emotion =
+export type Emotion =
   | 'happy'
   | 'proud'
   | 'sad'
@@ -39,7 +39,7 @@ export function createEmotionReply(
   };
 }
 
-function detectEmotion(entryText: string): Emotion {
+export function detectEmotion(entryText: string): Emotion {
   const lowerText = entryText.toLowerCase();
   const scored = Object.entries(emotionWords).map(([emotion, words]) => ({
     emotion: emotion as Emotion,

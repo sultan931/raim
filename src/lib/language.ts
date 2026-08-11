@@ -19,15 +19,15 @@ export const languageNames: Record<Language, string> = {
 
 export const uiText = {
   en: {
-    buddyName: 'Fenna',
-    diaryName: 'Fenna Diary',
+    buddyName: 'Jey',
+    diaryName: 'Jey Diary',
     headline: 'A diary that listens back.',
     intro:
       'A child can write or record feelings, then choose what stays private and what may be shown to a parent.',
     mineMood: 'Keeping this private',
     parentMood: 'Ready to share gently',
     welcome:
-      'I am Fenna. Tell me as much or as little as you want. You choose what stays only yours.',
+      'I am Jey. Tell me as much or as little as you want. You choose what stays only yours.',
     placeholder: 'Write what happened today, or record your voice.',
     diaryLabel: 'Diary message',
     conversationLabel: 'Diary conversation',
@@ -35,7 +35,7 @@ export const uiText = {
     parentOk: 'Can show parent',
     parentBadge: 'Parent ok',
     me: 'Me',
-    thinking: 'Fenna is thinking',
+    thinking: 'Jey is thinking',
     send: 'Send',
     record: 'Record',
     stop: 'Stop',
@@ -46,17 +46,23 @@ export const uiText = {
     noHint:
       'No parent alert right now. Private entries stay private unless the child chooses otherwise.',
     voiceEntry: 'I saved a voice note about my day.',
+    albumsButton: 'Daily albums',
+    albumsTitle: 'Daily albums',
+    albumsIntro: 'Each diary moment becomes a small memory card with its own mood image.',
+    backToDiary: 'Back to diary',
+    emptyAlbums: 'Your albums will appear after you write your first moment.',
+    moments: 'moments',
   },
   ru: {
-    buddyName: 'Фенна',
-    diaryName: 'Дневник Фенны',
+    buddyName: 'Jey',
+    diaryName: 'Дневник Jey',
     headline: 'Дневник, который отвечает.',
     intro:
       'Ребёнок может писать или записывать чувства, а потом сам решает, что останется личным, а что можно показать родителю.',
     mineMood: 'Это останется личным',
     parentMood: 'Можно мягко поделиться',
     welcome:
-      'Я Фенна. Расскажи столько, сколько хочешь. Ты сам выбираешь, что останется только твоим.',
+      'Я Jey. Расскажи столько, сколько хочешь. Ты сам выбираешь, что останется только твоим.',
     placeholder: 'Напиши, что было сегодня, или запиши голос.',
     diaryLabel: 'Сообщение дневника',
     conversationLabel: 'Разговор с дневником',
@@ -64,7 +70,7 @@ export const uiText = {
     parentOk: 'Можно родителю',
     parentBadge: 'Можно родителю',
     me: 'Я',
-    thinking: 'Фенна думает',
+    thinking: 'Jey думает',
     send: 'Отправить',
     record: 'Запись',
     stop: 'Стоп',
@@ -75,17 +81,23 @@ export const uiText = {
     noHint:
       'Сейчас сигнала для родителя нет. Личные записи остаются личными, пока ребёнок сам не решит иначе.',
     voiceEntry: 'Я сохранил голосовую заметку о своём дне.',
+    albumsButton: 'Альбомы дня',
+    albumsTitle: 'Альбомы дня',
+    albumsIntro: 'Каждый момент из дневника становится маленькой карточкой памяти.',
+    backToDiary: 'Назад в дневник',
+    emptyAlbums: 'Альбомы появятся после первой записи.',
+    moments: 'моментов',
   },
   kk: {
-    buddyName: 'Фенна',
-    diaryName: 'Фенна күнделігі',
+    buddyName: 'Jey',
+    diaryName: 'Jey күнделігі',
     headline: 'Жауап беретін күнделік.',
     intro:
       'Бала өз сезімін жазып немесе дауысымен сақтап, ненің жеке қалатынын, ненің ата-анаға көрсетілетінін өзі таңдайды.',
     mineMood: 'Бұл жеке болып қалады',
     parentMood: 'Жұмсақ бөлісуге болады',
     welcome:
-      'Мен Феннамын. Қалағаныңша айт. Ненің тек өзіңдікі болатынын өзің таңдайсың.',
+      'Мен Jey. Қалағаныңша айт. Ненің тек өзіңдікі болатынын өзің таңдайсың.',
     placeholder: 'Бүгін не болғанын жаз немесе дауысыңды жазып ал.',
     diaryLabel: 'Күнделік хабарламасы',
     conversationLabel: 'Күнделік әңгімесі',
@@ -93,7 +105,7 @@ export const uiText = {
     parentOk: 'Ата-анаға болады',
     parentBadge: 'Ата-анаға болады',
     me: 'Мен',
-    thinking: 'Фенна ойланып жатыр',
+    thinking: 'Jey ойланып жатыр',
     send: 'Жіберу',
     record: 'Жазу',
     stop: 'Тоқтату',
@@ -104,5 +116,11 @@ export const uiText = {
     noHint:
       'Қазір ата-анаға белгі жоқ. Бала өзі шешпейінше жеке жазбалар жеке болып қалады.',
     voiceEntry: 'Мен бүгінгі күнім туралы дауыс жазбасын сақтадым.',
+    albumsButton: 'Күн альбомдары',
+    albumsTitle: 'Күн альбомдары',
+    albumsIntro: 'Күнделіктегі әр сәт көңіл күй суреті бар естелікке айналады.',
+    backToDiary: 'Күнделікке қайту',
+    emptyAlbums: 'Алғашқы жазбадан кейін альбомдар осы жерде пайда болады.',
+    moments: 'сәт',
   },
 };

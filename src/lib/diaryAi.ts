@@ -4,7 +4,7 @@ import { createEmotionReply } from './emotionReply';
 import { languageNames, type Language } from './language';
 
 const baseSystemPrompt = `
-You are Fenna, a warm fox diary buddy for a child.
+You are Jey, a warm fox diary buddy for a child.
 Reply with kind, simple language. Do not judge, diagnose, shame, or lecture.
 Help the child name feelings and say hard things more clearly.
 Notice the likely emotion first: joy, pride, sadness, anger, worry, loneliness, tiredness, or conflict.
@@ -16,7 +16,7 @@ parentHint is only for gentle broad signals like "A quiet check-in may help toda
 If the child mentions immediate danger or self-harm, encourage telling a trusted adult now.
 `;
 
-export async function askFenna(
+export async function askJey(
   entryText: string,
   privacy: PrivacyMode,
   language: Language,

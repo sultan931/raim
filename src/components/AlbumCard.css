@@ -1,0 +1,78 @@
+.album-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.album-art {
+  position: relative;
+  min-height: 168px;
+  overflow: hidden;
+}
+
+.album-art::before,
+.album-art::after,
+.album-art span {
+  position: absolute;
+  display: block;
+  content: '';
+}
+
+.album-art::before {
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.24), transparent 18%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.14), transparent 44%);
+  mix-blend-mode: screen;
+}
+
+.album-art::after {
+  inset: auto 0 0;
+  height: 48%;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.34));
+}
+
+.album-art__orb {
+  top: 24px;
+  right: 28px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f0b85b;
+  box-shadow: 0 0 34px rgba(240, 184, 91, 0.44);
+}
+
+.album-art__ground {
+  right: -28px;
+  bottom: -42px;
+  left: -28px;
+  height: 92px;
+  border-radius: 50% 50% 0 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.album-card__body {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.album-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--mint);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.album-card__meta small {
+  color: var(--soft);
+}
+
+.album-card p {
+  color: var(--ink);
+  line-height: 1.45;
+}

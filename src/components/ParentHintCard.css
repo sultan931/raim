@@ -1,20 +1,20 @@
 .parent-hint {
   display: grid;
   gap: 8px;
-  border: 1px solid #d5e3dd;
+  border: 1px solid #31443e;
   border-radius: 8px;
-  background: #f5fbf7;
+  background: #15201d;
   padding: 16px;
 }
 
 .parent-hint span {
-  color: #54756f;
+  color: var(--mint);
   font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
 }
 
 .parent-hint p {
-  color: #24413b;
+  color: var(--ink);
   line-height: 1.45;
 }
