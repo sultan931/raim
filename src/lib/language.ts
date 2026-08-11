@@ -1,0 +1,108 @@
+export type Language = 'en' | 'ru' | 'kk';
+
+export type LanguageOption = {
+  code: Language;
+  label: string;
+};
+
+export const languageOptions: LanguageOption[] = [
+  { code: 'en', label: 'English' },
+  { code: 'ru', label: 'Русский' },
+  { code: 'kk', label: 'Қазақша' },
+];
+
+export const languageNames: Record<Language, string> = {
+  en: 'English',
+  ru: 'Russian',
+  kk: 'Kazakh',
+};
+
+export const uiText = {
+  en: {
+    buddyName: 'Fenna',
+    diaryName: 'Fenna Diary',
+    headline: 'A diary that listens back.',
+    intro:
+      'A child can write or record feelings, then choose what stays private and what may be shown to a parent.',
+    mineMood: 'Keeping this private',
+    parentMood: 'Ready to share gently',
+    welcome:
+      'I am Fenna. Tell me as much or as little as you want. You choose what stays only yours.',
+    placeholder: 'Write what happened today, or record your voice.',
+    diaryLabel: 'Diary message',
+    conversationLabel: 'Diary conversation',
+    onlyMine: 'Only mine',
+    parentOk: 'Can show parent',
+    parentBadge: 'Parent ok',
+    me: 'Me',
+    thinking: 'Fenna is thinking',
+    send: 'Send',
+    record: 'Record',
+    stop: 'Stop',
+    voiceReady: 'Voice note ready',
+    noRecording: 'Recording is not available in this browser.',
+    micNeeded: 'Microphone permission is needed to record.',
+    parentSignal: 'Parent signal',
+    noHint:
+      'No parent alert right now. Private entries stay private unless the child chooses otherwise.',
+    voiceEntry: 'I saved a voice note about my day.',
+  },
+  ru: {
+    buddyName: 'Фенна',
+    diaryName: 'Дневник Фенны',
+    headline: 'Дневник, который отвечает.',
+    intro:
+      'Ребёнок может писать или записывать чувства, а потом сам решает, что останется личным, а что можно показать родителю.',
+    mineMood: 'Это останется личным',
+    parentMood: 'Можно мягко поделиться',
+    welcome:
+      'Я Фенна. Расскажи столько, сколько хочешь. Ты сам выбираешь, что останется только твоим.',
+    placeholder: 'Напиши, что было сегодня, или запиши голос.',
+    diaryLabel: 'Сообщение дневника',
+    conversationLabel: 'Разговор с дневником',
+    onlyMine: 'Только моё',
+    parentOk: 'Можно родителю',
+    parentBadge: 'Можно родителю',
+    me: 'Я',
+    thinking: 'Фенна думает',
+    send: 'Отправить',
+    record: 'Запись',
+    stop: 'Стоп',
+    voiceReady: 'Голосовая заметка готова',
+    noRecording: 'В этом браузере запись недоступна.',
+    micNeeded: 'Чтобы записать голос, нужен доступ к микрофону.',
+    parentSignal: 'Сигнал родителю',
+    noHint:
+      'Сейчас сигнала для родителя нет. Личные записи остаются личными, пока ребёнок сам не решит иначе.',
+    voiceEntry: 'Я сохранил голосовую заметку о своём дне.',
+  },
+  kk: {
+    buddyName: 'Фенна',
+    diaryName: 'Фенна күнделігі',
+    headline: 'Жауап беретін күнделік.',
+    intro:
+      'Бала өз сезімін жазып немесе дауысымен сақтап, ненің жеке қалатынын, ненің ата-анаға көрсетілетінін өзі таңдайды.',
+    mineMood: 'Бұл жеке болып қалады',
+    parentMood: 'Жұмсақ бөлісуге болады',
+    welcome:
+      'Мен Феннамын. Қалағаныңша айт. Ненің тек өзіңдікі болатынын өзің таңдайсың.',
+    placeholder: 'Бүгін не болғанын жаз немесе дауысыңды жазып ал.',
+    diaryLabel: 'Күнделік хабарламасы',
+    conversationLabel: 'Күнделік әңгімесі',
+    onlyMine: 'Тек менікі',
+    parentOk: 'Ата-анаға болады',
+    parentBadge: 'Ата-анаға болады',
+    me: 'Мен',
+    thinking: 'Фенна ойланып жатыр',
+    send: 'Жіберу',
+    record: 'Жазу',
+    stop: 'Тоқтату',
+    voiceReady: 'Дауыс жазбасы дайын',
+    noRecording: 'Бұл браузерде дауыс жазу қолжетімсіз.',
+    micNeeded: 'Дауыс жазу үшін микрофонға рұқсат керек.',
+    parentSignal: 'Ата-анаға белгі',
+    noHint:
+      'Қазір ата-анаға белгі жоқ. Бала өзі шешпейінше жеке жазбалар жеке болып қалады.',
+    voiceEntry: 'Мен бүгінгі күнім туралы дауыс жазбасын сақтадым.',
+  },
+};

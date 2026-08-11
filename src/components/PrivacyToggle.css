@@ -1,0 +1,21 @@
+.privacy-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.privacy-toggle button {
+  padding: 10px 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--soft);
+}
+
+.privacy-toggle button.active {
+  background: #e4f0eb;
+  color: #1d3f38;
+}

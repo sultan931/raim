@@ -1,0 +1,32 @@
+import type { PrivacyMode } from '../lib/diaryTypes';
+import './PrivacyToggle.css';
+
+type PrivacyToggleProps = {
+  labels: {
+    onlyMine: string;
+    parentOk: string;
+  };
+  value: PrivacyMode;
+  onChange: (value: PrivacyMode) => void;
+};
+
+export function PrivacyToggle({ labels, value, onChange }: PrivacyToggleProps) {
+  return (
+    <div className="privacy-toggle" aria-label="Privacy choice">
+      <button
+        className={value === 'mine' ? 'active' : ''}
+        onClick={() => onChange('mine')}
+        type="button"
+      >
+        {labels.onlyMine}
+      </button>
+      <button
+        className={value === 'parent' ? 'active' : ''}
+        onClick={() => onChange('parent')}
+        type="button"
+      >
+        {labels.parentOk}
+      </button>
+    </div>
+  );
+}

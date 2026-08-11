@@ -1,0 +1,48 @@
+.chat-composer {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 16px;
+}
+
+.chat-composer textarea {
+  width: 100%;
+  min-height: 132px;
+  padding: 14px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.5;
+}
+
+.composer-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recording-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recording-side span {
+  color: var(--soft);
+  font-size: 14px;
+}
+
+.recorder-control {
+  display: grid;
+  gap: 4px;
+}
+
+.recorder-control small {
+  color: var(--clay);
+  font-size: 13px;
+}

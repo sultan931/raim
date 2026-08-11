@@ -1,0 +1,22 @@
+.language-selector {
+  display: grid;
+  gap: 6px;
+  max-width: 220px;
+}
+
+.language-selector span {
+  color: #54756f;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.language-selector select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
