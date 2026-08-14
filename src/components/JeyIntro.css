@@ -6,26 +6,29 @@
   place-items: center;
   min-height: 100vh;
   padding: 24px;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(143, 199, 180, 0.1), transparent 28vw),
-    linear-gradient(180deg, #111514 0%, #070908 100%);
+  background: #070908;
   animation: intro-fade-out 0.5s ease 1.9s forwards;
 }
 
 .jey-intro__stage {
+  position: relative;
   display: grid;
-  gap: 18px;
   place-items: center;
-  width: min(100%, 520px);
+  width: min(78vw, 420px);
+  aspect-ratio: 1;
 }
 
 .jey-intro__image {
-  width: min(78vw, 420px);
+  width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
 }
 
 .jey-intro__bubble {
+  position: absolute;
+  bottom: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%);
   min-width: 96px;
   padding: 13px 18px;
   border: 1px solid var(--line);
@@ -48,10 +51,11 @@
 
 @media (max-width: 560px) {
   .jey-intro__stage {
-    gap: 14px;
+    width: min(82vw, 360px);
   }
 
   .jey-intro__bubble {
+    bottom: calc(100% + 14px);
     font-size: 21px;
   }
 }
