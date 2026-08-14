@@ -15,7 +15,13 @@ export function JeyIntro({ onDone }: JeyIntroProps) {
       }}
     >
       <div className="jey-intro__stage">
-        <img alt="Jey" className="jey-intro__image" src={jeyFox} />
+        <img
+          alt="Jey"
+          className="jey-intro__image"
+          decoding="sync"
+          loading="eager"
+          src={jeyFox}
+        />
         <div className="jey-intro__bubble">hello</div>
       </div>
     </section>
