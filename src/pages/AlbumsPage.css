@@ -49,6 +49,12 @@
 .album-day {
   display: grid;
   gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(143, 199, 180, 0.08), transparent 34%),
+    rgba(23, 29, 27, 0.58);
 }
 
 .album-day__title {
@@ -62,14 +68,28 @@
   font-size: 24px;
 }
 
+.album-day__date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .album-day__title span {
   color: var(--soft);
 }
 
-.album-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
+.album-focus {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    rgba(13, 17, 16, 0.38);
+}
+
+.album-focus .album-card {
+  width: min(100%, 420px);
 }
 
 @media (max-width: 640px) {

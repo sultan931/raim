@@ -1,41 +1,48 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlbumButton } from '../components/AlbumButton';
-import { BuddyAvatar } from '../components/BuddyAvatar';
 import { ChatComposer } from '../components/ChatComposer';
 import { ChatThread } from '../components/ChatThread';
-import { LanguageSelector } from '../components/LanguageSelector';
+import { HomeHero } from '../components/HomeHero';
+import { JeyIntro } from '../components/JeyIntro';
 import { ParentHintCard } from '../components/ParentHintCard';
 import { askJey } from '../lib/diaryAi';
 import { saveRecording } from '../lib/audioStore';
-import { createAlbumMoment, saveAlbumMoment } from '../lib/album';
+import { transcribeAudio } from '../lib/audioTranscription';
+import { createDiaryMessage } from '../lib/createDiaryMessage';
 import {
   hydrateAudioUrls,
   languageStorageKey,
   loadLanguage,
-  loadMessages,
   messageStorageKey,
   translateWelcomeMessage,
 } from '../lib/diaryStorage';
+import { loadInitialMessages } from '../lib/loadInitialMessages';
 import { uiText, type Language } from '../lib/language';
-import type { DiaryMessage, PrivacyMode } from '../lib/diaryTypes';
+import type { PrivacyMode } from '../lib/diaryTypes';
+import { saveIfDiaryEntry } from '../lib/saveDiaryEntry';
+import { useObjectUrl } from '../lib/useObjectUrl';
+import { createVoiceReply } from '../lib/voiceReply';
 import './HomePage.css';
 
 export function HomePage() {
   const [language, setLanguage] = useState<Language>(() => loadLanguage());
-  const [messages, setMessages] = useState<DiaryMessage[]>(() =>
-    loadMessages(loadLanguage()),
-  );
+  const [messages, setMessages] = useState(() => loadInitialMessages());
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
   const [text, setText] = useState('');
   const [privacy, setPrivacy] = useState<PrivacyMode>('mine');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [recording, setRecording] = useState<Blob | null>(null);
+  const [voiceTranscript, setVoiceTranscript] = useState('');
   const [parentHint, setParentHint] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const t = uiText[language];
+  const recognitionLanguage = recognitionLanguages[language];
+  const recordingPreviewUrl = useObjectUrl(recording);
 
-  const canSend = text.trim().length >= 4 || recording !== null;
+  const canSend = text.trim().length >= 4 || recording !== null || photoUrl !== '';
   const moodLabel = useMemo(() => {
     if (privacy === 'mine') return t.mineMood;
+    if (privacy === 'mood') return t.moodMood;
     return t.parentMood;
   }, [privacy, t]);
 
@@ -54,39 +61,62 @@ export function HomePage() {
     if (!canSend || isSending) return;
 
     setIsSending(true);
-    const audioId = recording ? crypto.randomUUID() : undefined;
-    const entryText = text.trim() || t.voiceEntry;
+    try {
+      const audioId = recording ? crypto.randomUUID() : undefined;
+      const writtenText = text.trim();
+      const spokenText =
+        recording && !writtenText && !voiceTranscript.trim()
+          ? await transcribeAudio(recording, language)
+          : voiceTranscript.trim();
+      const entryText = writtenText || spokenText || t.voiceEntry;
+      const hasUnderstoodVoice = spokenText.length > 0 && writtenText.length === 0;
 
-    if (recording && audioId) {
-      await saveRecording(audioId, recording);
+      if (recording && audioId) {
+        await saveRecording(audioId, recording);
+      }
+
+      const childMessage = createDiaryMessage('child', entryText, privacy, { audioId, photoUrl });
+      setMessages((current) => [...current, childMessage]);
+      saveIfDiaryEntry(entryText, privacy, language);
+      setText('');
+      setVoiceTranscript('');
+      setPhotoUrl('');
+      setRecording(null);
+
+      const reply = recording && !hasUnderstoodVoice && writtenText.length === 0
+        ? createVoiceReply(language)
+        : await askJey(entryText, privacy, language);
+      setMessages((current) => [
+        ...current,
+        createDiaryMessage('buddy', reply.text, 'mine'),
+      ]);
+      setParentHint(reply.parentHint);
+    } finally {
+      setIsSending(false);
     }
+  }
 
-    const childMessage = createMessage('child', entryText, privacy, audioId);
-    setMessages((current) => [...current, childMessage]);
-    saveAlbumMoment(createAlbumMoment(entryText, privacy, language));
-    setText('');
-    setRecording(null);
+  function handleTextChange(nextText: string) {
+    setText(nextText);
+    setVoiceTranscript(nextText);
+  }
 
-    const reply = await askJey(entryText, privacy, language);
-    setMessages((current) => [...current, createMessage('buddy', reply.text, 'mine')]);
-    setParentHint(reply.parentHint);
-    setIsSending(false);
+  function handleRecordingReady(blob: Blob, transcript: string) {
+    setRecording(blob);
+    setVoiceTranscript(transcript);
+    if (transcript) setText(transcript);
   }
 
   return (
     <main className="diary-page">
-      <section className="diary-hero">
-        <div>
-          <p className="eyebrow">{t.diaryName}</p>
-          <h1>{t.headline}</h1>
-          <p>{t.intro}</p>
-        </div>
-        <div className="hero-side">
-          <LanguageSelector value={language} onChange={setLanguage} />
-          <AlbumButton label={t.albumsButton} />
-          <BuddyAvatar moodLabel={moodLabel} />
-        </div>
-      </section>
+      {showIntro && <JeyIntro onDone={() => setShowIntro(false)} />}
+
+      <HomeHero
+        labels={t}
+        language={language}
+        moodLabel={moodLabel}
+        onLanguageChange={setLanguage}
+      />
 
       <section className="diary-layout">
         <div className="chat-column">
@@ -96,11 +126,15 @@ export function HomePage() {
             hasRecording={recording !== null}
             isSending={isSending}
             labels={t}
+            onPhotoReady={setPhotoUrl}
             onPrivacyChange={setPrivacy}
-            onRecordingReady={setRecording}
+            onRecordingReady={handleRecordingReady}
             onSend={handleSend}
-            onTextChange={setText}
+            onTextChange={handleTextChange}
             privacy={privacy}
+            photoPreviewUrl={photoUrl}
+            recognitionLanguage={recognitionLanguage}
+            recordingPreviewUrl={recordingPreviewUrl}
             text={text}
           />
         </div>
@@ -110,18 +144,8 @@ export function HomePage() {
   );
 }
 
-function createMessage(
-  role: DiaryMessage['role'],
-  text: string,
-  privacy: PrivacyMode,
-  audioId?: string,
-): DiaryMessage {
-  return {
-    id: crypto.randomUUID(),
-    role,
-    text,
-    privacy,
-    audioId,
-    createdAt: new Date().toISOString(),
-  };
-}
+const recognitionLanguages: Record<Language, string> = {
+  en: 'en-US',
+  ru: 'ru-RU',
+  kk: 'kk-KZ',
+};

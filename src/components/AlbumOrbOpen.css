@@ -1,0 +1,54 @@
+.album-art__panel {
+  z-index: 6;
+  border: 1px solid rgba(206, 232, 255, 0.34);
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.62), transparent 16%),
+    linear-gradient(145deg, rgba(211, 241, 255, 0.28), rgba(38, 126, 255, 0.16)),
+    rgba(73, 156, 255, 0.2);
+  backdrop-filter: blur(3px) saturate(1.25);
+  box-shadow:
+    inset 12px 12px 20px rgba(255, 255, 255, 0.24),
+    inset -14px -16px 26px rgba(0, 26, 72, 0.24),
+    0 12px 24px rgba(0, 0, 0, 0.18);
+  transition: transform 320ms ease, opacity 220ms ease;
+}
+
+.album-art__panel.top {
+  inset: 0 0 50% 0;
+  border-radius: 999px 999px 0 0;
+  transform-origin: bottom;
+}
+
+.album-art__panel.right {
+  inset: 0 0 0 50%;
+  border-radius: 0 999px 999px 0;
+  transform-origin: left;
+}
+
+.album-art__panel.bottom {
+  inset: 50% 0 0 0;
+  border-radius: 0 0 999px 999px;
+  transform-origin: top;
+}
+
+.album-art__panel.left {
+  inset: 0 50% 0 0;
+  border-radius: 999px 0 0 999px;
+  transform-origin: right;
+}
+
+.album-card.open .album-art__panel.top {
+  transform: rotateX(64deg) translateY(-42px);
+}
+
+.album-card.open .album-art__panel.right {
+  transform: rotateY(-64deg) translateX(42px);
+}
+
+.album-card.open .album-art__panel.bottom {
+  transform: rotateX(-64deg) translateY(42px);
+}
+
+.album-card.open .album-art__panel.left {
+  transform: rotateY(64deg) translateX(-42px);
+}

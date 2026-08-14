@@ -1,0 +1,107 @@
+.mood-face {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(151, 221, 255, 0.54);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.86), transparent 12%),
+    radial-gradient(circle at 42% 42%, rgba(90, 183, 255, 0.62), transparent 35%),
+    linear-gradient(145deg, rgba(28, 117, 184, 0.92), rgba(10, 43, 82, 0.94));
+  box-shadow:
+    inset 0 1px 8px rgba(255, 255, 255, 0.32),
+    0 8px 22px rgba(16, 88, 150, 0.22);
+}
+
+.mood-face__eye {
+  position: absolute;
+  top: 11px;
+  width: 4px;
+  height: 5px;
+  border-radius: 50%;
+  background: #06141d;
+}
+
+.mood-face__eye--left {
+  left: 10px;
+}
+
+.mood-face__eye--right {
+  right: 10px;
+}
+
+.mood-face__mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  width: 13px;
+  height: 7px;
+  border-bottom: 2px solid #06141d;
+  border-radius: 0 0 14px 14px;
+  transform: translateX(-50%);
+}
+
+.mood-face--proud .mood-face__mouth {
+  width: 15px;
+  height: 8px;
+}
+
+.mood-face--sad .mood-face__mouth,
+.mood-face--lonely .mood-face__mouth {
+  bottom: 7px;
+  border-top: 2px solid #06141d;
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+}
+
+.mood-face--tired .mood-face__eye {
+  height: 2px;
+  border-radius: 2px;
+}
+
+.mood-face--tired .mood-face__mouth,
+.mood-face--neutral .mood-face__mouth {
+  bottom: 11px;
+  height: 0;
+  border-bottom: 2px solid #06141d;
+  border-radius: 2px;
+}
+
+.mood-face--angry::before,
+.mood-face--angry::after,
+.mood-face--conflict::before,
+.mood-face--conflict::after,
+.mood-face--anxious::before,
+.mood-face--anxious::after {
+  position: absolute;
+  top: 8px;
+  width: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: #06141d;
+  content: '';
+}
+
+.mood-face--angry::before,
+.mood-face--conflict::before {
+  left: 7px;
+  transform: rotate(18deg);
+}
+
+.mood-face--angry::after,
+.mood-face--conflict::after {
+  right: 7px;
+  transform: rotate(-18deg);
+}
+
+.mood-face--anxious::before {
+  left: 7px;
+  transform: rotate(-12deg);
+}
+
+.mood-face--anxious::after {
+  right: 7px;
+  transform: rotate(12deg);
+}

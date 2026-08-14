@@ -1,6 +1,9 @@
 import type { DiaryMessage, PrivacyMode } from './diaryTypes';
 import { detectEmotion, type Emotion } from './emotionReply';
 import type { Language } from './language';
+import { createDayReflection, createQuietReflection } from './albumReflection';
+import { isDiaryEntry } from './diaryEntryFilter';
+import { createMomentDescription } from './albumMomentText';
 
 export type AlbumMoment = {
   id: string;
@@ -13,7 +16,7 @@ export type AlbumMoment = {
 
 export type DailyAlbum = {
   date: string;
-  moments: AlbumMoment[];
+  sphere: AlbumMoment;
 };
 
 const albumStorageKey = 'fenna-daily-albums';
@@ -26,7 +29,7 @@ export function createAlbumMoment(
   return {
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
-    description: createDescription(text, language),
+    description: createMomentDescription(text, language),
     emotion: detectEmotion(text),
     privacy,
     textPreview: text,
@@ -41,7 +44,10 @@ export function saveAlbumMoment(moment: AlbumMoment) {
 export function loadDailyAlbums(language: Language): DailyAlbum[] {
   const moments = loadAlbumMoments();
   const availableMoments = moments.length > 0 ? moments : loadLegacyMoments(language);
-  const grouped = availableMoments.reduce<Record<string, AlbumMoment[]>>(
+  const diaryMoments = availableMoments.filter((moment) => isDiaryEntry(moment.textPreview));
+  if (diaryMoments.length === 0) return [createQuietAlbum(language)];
+
+  const grouped = diaryMoments.reduce<Record<string, AlbumMoment[]>>(
     (albums, moment) => {
       const day = moment.date.slice(0, 10);
       return { ...albums, [day]: [...(albums[day] ?? []), moment] };
@@ -50,8 +56,59 @@ export function loadDailyAlbums(language: Language): DailyAlbum[] {
   );
 
   return Object.entries(grouped)
-    .map(([date, moments]) => ({ date, moments }))
+    .map(([date, moments]) => ({ date, sphere: createDaySphere(date, moments, language) }))
     .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function createDaySphere(
+  date: string,
+  moments: AlbumMoment[],
+  language: Language,
+): AlbumMoment {
+  const mainEmotion = getDominantEmotion(moments);
+  const firstMoment = moments[0];
+  const reflection = createDayReflection(
+    moments.map((moment) => moment.textPreview),
+    moments.map((moment) => moment.privacy),
+    mainEmotion,
+    language,
+  );
+
+  return {
+    id: `day-sphere-${date}`,
+    date: firstMoment.date,
+    description: reflection.description,
+    emotion: mainEmotion,
+    privacy: reflection.privacy,
+    textPreview: reflection.textPreview,
+  };
+}
+
+function createQuietAlbum(language: Language): DailyAlbum {
+  const date = new Date().toISOString();
+  const day = date.slice(0, 10);
+  const reflection = createQuietReflection(language);
+  return {
+    date: day,
+    sphere: {
+      id: `day-sphere-empty-${day}`,
+      date,
+      description: reflection.description,
+      emotion: 'neutral',
+      privacy: reflection.privacy,
+      textPreview: reflection.textPreview,
+    },
+  };
+}
+
+function getDominantEmotion(moments: AlbumMoment[]): Emotion {
+  const counts = moments.reduce<Partial<Record<Emotion, number>>>((emotionCounts, moment) => {
+    return { ...emotionCounts, [moment.emotion]: (emotionCounts[moment.emotion] ?? 0) + 1 };
+  }, {});
+
+  return moments
+    .map((moment) => moment.emotion)
+    .sort((a, b) => (counts[b] ?? 0) - (counts[a] ?? 0))[0];
 }
 
 function loadAlbumMoments(): AlbumMoment[] {
@@ -79,25 +136,13 @@ function loadLegacyMoments(language: Language): AlbumMoment[] {
   }
 }
 
-function createMomentFromMessage(
-  message: DiaryMessage,
-  language: Language,
-): AlbumMoment {
+function createMomentFromMessage(message: DiaryMessage, language: Language): AlbumMoment {
   return {
     id: `album-${message.id}`,
     date: message.createdAt,
-    description: createDescription(message.text, language),
+    description: createMomentDescription(message.text, language),
     emotion: detectEmotion(message.text),
     privacy: message.privacy,
     textPreview: message.text,
   };
-}
-
-function createDescription(text: string, language: Language) {
-  const cleanText = text.replace(/\s+/g, ' ').trim();
-  const preview = cleanText.length > 86 ? `${cleanText.slice(0, 86)}...` : cleanText;
-
-  if (language === 'ru') return `Момент дня: ${preview}`;
-  if (language === 'kk') return `Күн сәті: ${preview}`;
-  return `Moment from today: ${preview}`;
 }

@@ -1,4 +1,4 @@
-export type PrivacyMode = 'mine' | 'parent';
+export type PrivacyMode = 'mine' | 'mood' | 'parent';
 
 export type DiaryMessage = {
   id: string;
@@ -7,6 +7,7 @@ export type DiaryMessage = {
   privacy: PrivacyMode;
   createdAt: string;
   audioId?: string;
+  photoUrl?: string;
 };
 
 export type BuddyReply = {

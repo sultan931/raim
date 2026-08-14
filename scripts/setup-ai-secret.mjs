@@ -19,15 +19,23 @@ function readValue(source, name) {
   return line.slice(line.indexOf('=') + 1).trim().replace(/^(['"])(.*)\1$/, '$2');
 }
 
-let source;
-try {
-  source = await readFile('.env', 'utf8');
-} catch {
-  fail('.env is missing');
+async function readEnvSource() {
+  const sources = await Promise.all(
+    ['.env.local', '.env'].map(async (file) => {
+      try {
+        return await readFile(file, 'utf8');
+      } catch {
+        return '';
+      }
+    }),
+  );
+
+  return sources.join('\n');
 }
 
-const apiKey = readValue(source, 'GEMINI_API_KEY');
-if (!apiKey) fail('GEMINI_API_KEY is missing in .env');
+const source = await readEnvSource();
+const apiKey = readValue(source, 'GEMINI_API_KEY') || readValue(source, 'gemini_api_key');
+if (!apiKey) fail('GEMINI_API_KEY is missing in .env.local or .env');
 
 const tempDirectory = await mkdtemp(join(tmpdir(), 'nfact-ai-secret-'));
 const secretFile = join(tempDirectory, 'gemini.env');

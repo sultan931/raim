@@ -1,0 +1,27 @@
+.auth-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+  margin: 16px 0;
+  color: var(--soft);
+  font-size: 14px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  height: 1px;
+  content: '';
+  background: var(--line);
+}
+
+.google-button {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--ink);
+}
+
+.google-button:hover {
+  border-color: var(--mint);
+}

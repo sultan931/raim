@@ -1,0 +1,89 @@
+.jey-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(143, 199, 180, 0.2), transparent 34vw),
+    linear-gradient(180deg, #101413 0%, #0b0e0d 100%);
+  animation: intro-fade-out 0.5s ease 1.9s forwards;
+}
+
+.jey-intro__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 520px);
+  min-height: min(76vh, 620px);
+}
+
+.jey-intro__image {
+  width: min(82vw, 440px);
+  aspect-ratio: 1;
+  object-fit: contain;
+  animation: intro-pop 0.55s ease-out both;
+}
+
+.jey-intro__bubble {
+  position: absolute;
+  top: clamp(18px, 8vh, 72px);
+  right: clamp(4px, 5vw, 48px);
+  min-width: 96px;
+  padding: 13px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink);
+  color: #101413;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+  animation: bubble-in 0.35s ease-out 0.35s both;
+}
+
+@keyframes intro-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes intro-fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 560px) {
+  .jey-intro__stage {
+    min-height: 68vh;
+  }
+
+  .jey-intro__bubble {
+    top: 16px;
+    right: 10px;
+    font-size: 21px;
+  }
+}

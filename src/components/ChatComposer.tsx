@@ -1,3 +1,4 @@
+import { PhotoButton } from './PhotoButton';
 import { RecorderButton } from './RecorderButton';
 import { PrivacyToggle } from './PrivacyToggle';
 import type { PrivacyMode } from '../lib/diaryTypes';
@@ -10,6 +11,7 @@ type ChatComposerProps = {
   labels: {
     diaryLabel: string;
     micNeeded: string;
+    moodOnly: string;
     noRecording: string;
     onlyMine: string;
     parentOk: string;
@@ -18,12 +20,17 @@ type ChatComposerProps = {
     send: string;
     stop: string;
     thinking: string;
+    voiceTranscriptHint: string;
     voiceReady: string;
   };
   privacy: PrivacyMode;
+  recognitionLanguage: string;
+  recordingPreviewUrl: string;
+  photoPreviewUrl: string;
   text: string;
   onPrivacyChange: (privacy: PrivacyMode) => void;
-  onRecordingReady: (blob: Blob) => void;
+  onPhotoReady: (photoUrl: string) => void;
+  onRecordingReady: (blob: Blob, transcript: string) => void;
   onSend: () => void;
   onTextChange: (text: string) => void;
 };
@@ -44,9 +51,12 @@ export function ChatComposer(props: ChatComposerProps) {
       />
       <div className="composer-actions">
         <div className="recording-side">
+          <PhotoButton onPhotoReady={props.onPhotoReady} />
           <RecorderButton
             labels={props.labels}
+            recognitionLanguage={props.recognitionLanguage}
             onRecordingReady={props.onRecordingReady}
+            onTranscriptChange={props.onTextChange}
           />
           {props.hasRecording && <span>{props.labels.voiceReady}</span>}
         </div>
@@ -58,6 +68,23 @@ export function ChatComposer(props: ChatComposerProps) {
           {props.isSending ? props.labels.thinking : props.labels.send}
         </button>
       </div>
+      {props.recordingPreviewUrl && (
+        <div className="recording-preview">
+          <audio controls src={props.recordingPreviewUrl}>
+            <track kind="captions" />
+          </audio>
+          {props.text.trim().length === 0 && (
+            <small>{props.labels.voiceTranscriptHint}</small>
+          )}
+        </div>
+      )}
+      {props.photoPreviewUrl && (
+        <img
+          alt="Selected diary moment"
+          className="photo-preview"
+          src={props.photoPreviewUrl}
+        />
+      )}
     </section>
   );
 }

@@ -1,24 +1,24 @@
-.album-art.glow { background: radial-gradient(circle at 42% 44%, #ffd16b, #b96f38 42%, #17392f); }
-.album-art.lift { background: linear-gradient(160deg, #16302c, #326b62 54%, #f0b85b); }
-.album-art.pressure { background: radial-gradient(circle at 50% 12%, #4a435f, #171923 62%); }
-.album-art.tangle { background: linear-gradient(135deg, #23213b, #4f3858); }
-.album-art.echo { background: radial-gradient(circle at 50% 50%, #42546b, #121827 70%); }
-.album-art.spark { background: radial-gradient(circle at 56% 54%, #f0b85b, #8a342d 35%, #241518); }
-.album-art.drift { background: linear-gradient(145deg, #172233, #42546b 58%, #8fc7b4); }
-.album-art.still { background: linear-gradient(135deg, #101817, #1d3031 62%, #26344f); }
+.album-art.glow { background: radial-gradient(circle at 42% 44%, #75c7ff, #1d6fd6 42%, #0a1938); }
+.album-art.lift { background: linear-gradient(160deg, #08254f, #0e73d8 54%, #6fd8ff); }
+.album-art.pressure { background: radial-gradient(circle at 50% 12%, #316bb5, #111f45 62%); }
+.album-art.tangle { background: linear-gradient(135deg, #102b68, #3558b8); }
+.album-art.echo { background: radial-gradient(circle at 50% 50%, #4d93e6, #0b1938 70%); }
+.album-art.spark { background: radial-gradient(circle at 56% 54%, #a7dcff, #196bcf 35%, #07152f); }
+.album-art.drift { background: linear-gradient(145deg, #0a214d, #2a70c8 58%, #91d9ff); }
+.album-art.still { background: linear-gradient(135deg, #071423, #0f3c73 62%, #2f84df); }
 
 .album-art.glow .album-art__orb {
-  top: 54px;
+  top: 62px;
   left: 50%;
   width: 76px;
   height: 76px;
   translate: -50% 0;
-  background: rgba(255, 228, 145, 0.82);
+  background: rgba(167, 220, 255, 0.86);
 }
 
 .album-art.glow .album-art__shape {
   border-radius: 50%;
-  background: rgba(255, 236, 181, 0.34);
+  background: rgba(201, 239, 255, 0.72);
 }
 .album-art.glow .one { top: 28px; left: 34px; width: 28px; height: 28px; }
 .album-art.glow .two { right: 30px; bottom: 52px; width: 34px; height: 34px; }
@@ -27,18 +27,18 @@
 .album-art.lift .one,
 .album-art.lift .two,
 .album-art.lift .three {
-  bottom: 28px;
+  bottom: 34px;
   width: 42px;
   height: 118px;
   border-radius: 999px 999px 10px 10px;
-  background: linear-gradient(180deg, #d7fff0, #0f756d);
+  background: linear-gradient(180deg, #effcff, #33a9ff);
 }
 .album-art.lift .one { left: 36px; height: 74px; }
 .album-art.lift .two { left: 92px; }
 .album-art.lift .three { right: 38px; height: 92px; }
 
 .album-art.pressure .album-art__orb {
-  top: 18px;
+  top: 30px;
   left: 50%;
   width: 150px;
   height: 58px;
@@ -47,27 +47,27 @@
 }
 .album-art.pressure .one {
   right: 24px;
-  bottom: 34px;
+  bottom: 56px;
   left: 24px;
   height: 36px;
   border-radius: 999px;
-  background: rgba(220, 238, 232, 0.18);
+  background: rgba(220, 238, 232, 0.42);
 }
 
 .album-art.tangle .album-art__shape {
-  border: 4px solid rgba(143, 199, 180, 0.78);
+  border: 5px solid rgba(201, 239, 255, 0.9);
   border-radius: 24px;
   background: transparent;
 }
 .album-art.tangle .one { inset: 28px 46px 52px; rotate: 9deg; }
-.album-art.tangle .two { inset: 46px 62px 34px; rotate: -16deg; }
-.album-art.tangle .three { inset: 66px 26px 42px 86px; rotate: 24deg; }
+.album-art.tangle .two { inset: 50px 62px 46px; rotate: -16deg; }
+.album-art.tangle .three { inset: 70px 30px 52px 84px; rotate: 24deg; }
 
 .album-art.echo .album-art__shape {
   left: 50%;
   top: 50%;
   translate: -50% -50%;
-  border: 3px solid rgba(220, 238, 232, 0.38);
+  border: 4px solid rgba(220, 238, 232, 0.72);
   border-radius: 50%;
   background: transparent;
 }
@@ -77,25 +77,25 @@
 
 .album-art.spark .album-art__shape {
   clip-path: polygon(45% 0, 72% 0, 54% 38%, 80% 38%, 28% 100%, 42% 48%, 20% 48%);
-  background: #f0b85b;
-  filter: drop-shadow(0 0 12px rgba(240, 184, 91, 0.58));
+  background: #d6f3ff;
+  filter: drop-shadow(0 0 16px rgba(130, 207, 255, 0.78));
 }
-.album-art.spark .one { top: 28px; left: 44px; width: 34px; height: 82px; }
-.album-art.spark .two { top: 58px; right: 52px; width: 26px; height: 70px; rotate: 18deg; }
+.album-art.spark .one { top: 42px; left: 54px; width: 34px; height: 82px; }
+.album-art.spark .two { top: 70px; right: 60px; width: 26px; height: 70px; rotate: 18deg; }
 
 .album-art.drift .album-art__shape {
   width: 130px;
   height: 34px;
   border-radius: 999px;
-  background: rgba(220, 238, 232, 0.22);
+  background: rgba(220, 238, 232, 0.52);
 }
-.album-art.drift .one { top: 38px; left: 22px; }
-.album-art.drift .two { top: 82px; right: 20px; }
-.album-art.drift .three { bottom: 38px; left: 52px; }
+.album-art.drift .one { top: 50px; left: 30px; }
+.album-art.drift .two { top: 94px; right: 26px; }
+.album-art.drift .three { bottom: 50px; left: 54px; }
 
 .album-art.still .album-art__shape {
   border-radius: 16px;
-  background: rgba(143, 199, 180, 0.18);
+  background: rgba(143, 199, 180, 0.38);
 }
 .album-art.still .one { inset: 34px 66px 42px; border: 1px solid rgba(220, 238, 232, 0.22); }
 .album-art.still .two { top: 54px; left: 50%; width: 1px; height: 82px; background: rgba(220, 238, 232, 0.32); }

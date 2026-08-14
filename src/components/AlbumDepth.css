@@ -6,16 +6,13 @@
 .album-art::before {
   z-index: 3;
   background:
-    linear-gradient(125deg, rgba(255, 255, 255, 0.34), transparent 28%),
-    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.2), transparent 18%);
-  opacity: 0.7;
+    linear-gradient(125deg, rgba(255, 255, 255, 0.46), transparent 28%),
+    radial-gradient(circle at 72% 18%, rgba(219, 244, 255, 0.28), transparent 18%);
+  opacity: 0.82;
 }
 
 .album-art::after {
   z-index: 4;
-  background:
-    linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.36)),
-    radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.48), transparent 42%);
 }
 
 .album-art__orb,
@@ -37,10 +34,10 @@
   background:
     radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.86), transparent 13%),
     radial-gradient(circle at 58% 62%, rgba(0, 0, 0, 0.18), transparent 42%),
-    #f0b85b;
+    #53a9ff;
   box-shadow:
     0 20px 34px rgba(0, 0, 0, 0.32),
-    0 0 36px rgba(240, 184, 91, 0.46);
+    0 0 42px rgba(83, 169, 255, 0.54);
   transform: translateZ(44px);
 }
 
@@ -49,15 +46,16 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04)),
     rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 22px 34px rgba(255, 255, 255, 0.08);
-  transform: rotateX(54deg) translateY(22px);
+  transform: rotateX(58deg) translateY(18px) translateZ(-20px);
   transform-origin: bottom;
 }
 
 .album-art__shape {
   box-shadow:
-    inset 10px 12px 18px rgba(255, 255, 255, 0.18),
-    inset -14px -18px 24px rgba(0, 0, 0, 0.24),
-    0 18px 28px rgba(0, 0, 0, 0.28);
+    inset 10px 12px 18px rgba(255, 255, 255, 0.28),
+    inset -14px -18px 24px rgba(0, 0, 0, 0.18),
+    0 14px 24px rgba(0, 0, 0, 0.22),
+    0 0 18px rgba(118, 202, 255, 0.34);
 }
 
 .album-art.glow .album-art__shape,

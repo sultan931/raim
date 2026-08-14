@@ -3,6 +3,7 @@ import './PrivacyToggle.css';
 
 type PrivacyToggleProps = {
   labels: {
+    moodOnly: string;
     onlyMine: string;
     parentOk: string;
   };
@@ -19,6 +20,13 @@ export function PrivacyToggle({ labels, value, onChange }: PrivacyToggleProps) {
         type="button"
       >
         {labels.onlyMine}
+      </button>
+      <button
+        className={value === 'mood' ? 'active' : ''}
+        onClick={() => onChange('mood')}
+        type="button"
+      >
+        {labels.moodOnly}
       </button>
       <button
         className={value === 'parent' ? 'active' : ''}

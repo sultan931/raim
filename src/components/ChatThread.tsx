@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { DiaryMessage } from '../lib/diaryTypes';
 import './ChatThread.css';
 
@@ -7,6 +8,7 @@ type ChatThreadProps = {
     buddyName: string;
     conversationLabel: string;
     me: string;
+    moodBadge: string;
     onlyMine: string;
     parentBadge: string;
   };
@@ -14,19 +16,37 @@ type ChatThreadProps = {
 };
 
 export function ChatThread({ audioUrls, labels, messages }: ChatThreadProps) {
+  const threadRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    threadRef.current?.scrollTo({
+      top: threadRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, [messages.length]);
+
   return (
-    <section className="chat-thread" aria-label={labels.conversationLabel}>
+    <section
+      className="chat-thread"
+      aria-label={labels.conversationLabel}
+      ref={threadRef}
+    >
       {messages.map((message) => (
         <article className={`message-bubble ${message.role}`} key={message.id}>
           <div className="message-meta">
             <span>{message.role === 'child' ? labels.me : labels.buddyName}</span>
             {message.role === 'child' && (
-              <small>
-                {message.privacy === 'mine' ? labels.onlyMine : labels.parentBadge}
-              </small>
+              <small>{getPrivacyLabel(message.privacy, labels)}</small>
             )}
           </div>
           <p>{message.text}</p>
+          {message.photoUrl && (
+            <img
+              alt="Diary moment"
+              className="message-photo"
+              src={message.photoUrl}
+            />
+          )}
           {message.audioId && audioUrls[message.audioId] && (
             <audio controls src={audioUrls[message.audioId]}>
               <track kind="captions" />
@@ -36,4 +56,13 @@ export function ChatThread({ audioUrls, labels, messages }: ChatThreadProps) {
       ))}
     </section>
   );
+}
+
+function getPrivacyLabel(
+  privacy: DiaryMessage['privacy'],
+  labels: ChatThreadProps['labels'],
+) {
+  if (privacy === 'mine') return labels.onlyMine;
+  if (privacy === 'mood') return labels.moodBadge;
+  return labels.parentBadge;
 }

@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
 import { AlbumCard } from '../components/AlbumCard';
+import { MoodFace } from '../components/MoodFace';
 import { loadDailyAlbums } from '../lib/album';
 import { loadLanguage } from '../lib/diaryStorage';
 import { uiText } from '../lib/language';
@@ -30,15 +31,14 @@ export function AlbumsPage() {
           {albums.map((album) => (
             <section className="album-day" key={album.date}>
               <div className="album-day__title">
-                <h2>{formatDate(album.date, language)}</h2>
-                <span>
-                  {album.moments.length} {t.moments}
-                </span>
+                <div className="album-day__date">
+                  <h2>{formatDate(album.date, language)}</h2>
+                  <MoodFace emotion={album.sphere.emotion} />
+                </div>
+                <span>{t.moments}</span>
               </div>
-              <div className="album-grid">
-                {album.moments.map((moment) => (
-                  <AlbumCard key={moment.id} labels={t} moment={moment} />
-                ))}
+              <div className="album-focus">
+                <AlbumCard labels={t} language={language} moment={album.sphere} />
               </div>
             </section>
           ))}

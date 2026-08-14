@@ -1,4 +1,7 @@
 import type { BuddyReply, PrivacyMode } from './diaryTypes';
+import { createActivityReply } from './activityReply';
+import { createGreetingReply } from './greetingReply';
+import { createMixedDayReply } from './mixedDayReply';
 import type { Language } from './language';
 
 export type Emotion =
@@ -29,13 +32,22 @@ export function createEmotionReply(
   privacy: PrivacyMode,
   language: Language,
 ): BuddyReply {
+  const greetingReply = createGreetingReply(entryText, language);
+  if (greetingReply) return greetingReply;
+
+  const mixedDayReply = createMixedDayReply(entryText, privacy, language);
+  if (mixedDayReply) return mixedDayReply;
+
+  const activityReply = createActivityReply(entryText, privacy, language);
+  if (activityReply) return activityReply;
+
   const emotion = detectEmotion(entryText);
   const reply = replies[language][emotion];
   const parentHint = parentHints[language][emotion] ?? '';
 
   return {
     text: pick(reply, entryText),
-    parentHint: privacy === 'mine' ? parentHint : '',
+    parentHint: privacy === 'parent' ? '' : parentHint,
   };
 }
 
