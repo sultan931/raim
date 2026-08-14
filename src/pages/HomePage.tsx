@@ -34,7 +34,7 @@ export function HomePage() {
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [parentHint, setParentHint] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => shouldShowJeyIntro());
   const t = uiText[language];
   const recognitionLanguage = recognitionLanguages[language];
   const recordingPreviewUrl = useObjectUrl(recording);
@@ -149,3 +149,18 @@ const recognitionLanguages: Record<Language, string> = {
   ru: 'ru-RU',
   kk: 'kk-KZ',
 };
+
+const jeyIntroSeenKey = 'jey-intro-seen';
+
+function shouldShowJeyIntro() {
+  try {
+    if (sessionStorage.getItem(jeyIntroSeenKey) === 'true') {
+      return false;
+    }
+
+    sessionStorage.setItem(jeyIntroSeenKey, 'true');
+    return true;
+  } catch {
+    return true;
+  }
+}
