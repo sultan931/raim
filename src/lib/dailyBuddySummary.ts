@@ -30,12 +30,16 @@ export async function createDailyBuddySummary(moment: AlbumMoment, language: Lan
     'Return 3 very short parts: takeaway, follow-up question, action plan.',
   ].join('\n');
 
-  const { data, error } = await supabase.functions.invoke('ai', {
-    body: { prompt, system },
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke('ai', {
+      body: { prompt, system },
+    });
 
-  if (error || !isTextResponse(data)) return '';
-  return data.text;
+    if (error || !isTextResponse(data)) return '';
+    return data.text;
+  } catch {
+    return '';
+  }
 }
 
 const shortNotEnoughText: Record<Language, string> = {

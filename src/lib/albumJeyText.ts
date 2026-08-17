@@ -20,12 +20,16 @@ export async function createJeyAlbumText(text: string, language: Language) {
     text,
   ].join('\n');
 
-  const { data, error } = await supabase.functions.invoke('ai', {
-    body: { prompt, system },
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke('ai', {
+      body: { prompt, system },
+    });
 
-  if (error || !isTextResponse(data)) return '';
-  return cleanBubbleText(data.text);
+    if (error || !isTextResponse(data)) return '';
+    return cleanBubbleText(data.text);
+  } catch {
+    return '';
+  }
 }
 
 function cleanBubbleText(text: string) {

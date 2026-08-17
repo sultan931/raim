@@ -7,7 +7,7 @@
 //   3) Задеплой:        npm run ai:deploy
 
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY') ?? Deno.env.get('gemini_api_key');
-const MODEL = 'gemini-3.6-flash';
+const MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -15,6 +15,11 @@ const cors = {
 };
 
 type GeminiResponse = {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{ text?: unknown }>;
+    };
+  }>;
   error?: { message?: unknown };
   output_text?: unknown;
   steps?: Array<{
@@ -63,17 +68,14 @@ Deno.serve(async (req) => {
     }
 
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/interactions',
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-goog-api-key': GEMINI_API_KEY,
         },
-        body: JSON.stringify({
-          model: MODEL,
-          input: createInput(prompt, system, audio),
-        }),
+        body: JSON.stringify(createGeminiRequest(prompt, system, audio)),
       },
     );
 
@@ -82,21 +84,22 @@ Deno.serve(async (req) => {
       console.error('Gemini request failed', response.status, data);
       return json({
         detail: getGeminiError(data),
-        error: 'AI сейчас не ответил. Попробуй ещё раз чуть позже.',
+        text: '',
+        warning: 'AI сейчас не ответил. Используем запасной ответ.',
         status: response.status,
-      }, 502);
+      });
     }
 
     const text = getText(data);
     if (typeof text !== 'string' || !text.trim()) {
       console.error('Gemini returned an empty response', data);
-      return json({ error: 'AI вернул пустой ответ. Попробуй переформулировать запрос.' }, 502);
+      return json({ text: '', warning: 'AI вернул пустой ответ. Используем запасной ответ.' });
     }
 
     return json({ text });
   } catch (error) {
     console.error('AI function failed', error);
-    return json({ error: 'Не получилось обратиться к AI. Попробуй ещё раз.' }, 500);
+    return json({ text: '', warning: 'Не получилось обратиться к AI. Используем запасной ответ.' });
   }
 });
 
@@ -107,21 +110,34 @@ function parseAudio(audio: AiRequestBody['audio']) {
   return { data, mimeType: normalizeMimeType(mimeType) };
 }
 
-function createInput(prompt: string, system: string, audio: ReturnType<typeof parseAudio>) {
-  const text = system ? `${system}\n\n${prompt}` : prompt;
-  if (!audio) return text;
+function createGeminiRequest(prompt: string, system: string, audio: ReturnType<typeof parseAudio>) {
+  const parts: Array<
+    | { text: string }
+    | { inline_data: { data: string; mime_type: string } }
+  > = [{ text: prompt }];
 
-  return [
-    { type: 'text', text },
-    {
-      type: 'audio',
-      data: audio.data,
-      mime_type: audio.mimeType,
-    },
-  ];
+  if (audio) {
+    parts.push({
+      inline_data: {
+        data: audio.data,
+        mime_type: audio.mimeType,
+      },
+    });
+  }
+
+  return {
+    contents: [{ role: 'user', parts }],
+    systemInstruction: system ? { parts: [{ text: system }] } : undefined,
+  };
 }
 
 function getText(data: GeminiResponse) {
+  const candidateText = data.candidates?.[0]?.content?.parts
+    ?.map((part) => part.text)
+    .filter((text): text is string => typeof text === 'string')
+    .join('')
+    .trim();
+  if (candidateText) return candidateText;
   if (typeof data.output_text === 'string') return data.output_text;
   return data.steps
     ?.find((step) => step.type === 'model_output')
