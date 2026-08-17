@@ -16,7 +16,21 @@ export type Emotion =
   | 'neutral';
 
 const emotionWords: Record<Emotion, string[]> = {
-  happy: ['happy', 'fun', 'great', 'cool', 'good', 'рад', 'весело', 'классно'],
+  happy: [
+    'happy',
+    'fun',
+    'great',
+    'cool',
+    'good',
+    'liked',
+    'enjoyed',
+    'рад',
+    'весело',
+    'классно',
+    'понравилось',
+    'хорошо',
+    'жақсы',
+  ],
   proud: ['proud', 'won', 'finished', 'did it', 'горжусь', 'получилось'],
   sad: ['sad', 'cry', 'cried', 'upset', 'грустно', 'плакал', 'плакала'],
   angry: ['angry', 'mad', 'hate', 'annoyed', 'злюсь', 'бесит', 'ненавижу'],
@@ -32,14 +46,14 @@ export function createEmotionReply(
   privacy: PrivacyMode,
   language: Language,
 ): BuddyReply {
-  const greetingReply = createGreetingReply(entryText, language);
-  if (greetingReply) return greetingReply;
-
   const mixedDayReply = createMixedDayReply(entryText, privacy, language);
   if (mixedDayReply) return mixedDayReply;
 
   const activityReply = createActivityReply(entryText, privacy, language);
   if (activityReply) return activityReply;
+
+  const greetingReply = createGreetingReply(entryText, language);
+  if (greetingReply) return greetingReply;
 
   const emotion = detectEmotion(entryText);
   const reply = replies[language][emotion];

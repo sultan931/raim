@@ -75,7 +75,7 @@ export function HomePage() {
 
       const childMessage = createDiaryMessage('child', entryText, privacy, { audioId, photoUrl });
       setMessages((current) => [...current, childMessage]);
-      saveIfDiaryEntry(entryText, privacy, language);
+      const diarySave = saveIfDiaryEntry(entryText, privacy, language);
       setText('');
       setVoiceTranscript('');
       setPhotoUrl('');
@@ -84,6 +84,7 @@ export function HomePage() {
       const reply = recording && !hasUnderstoodVoice && writtenText.length === 0
         ? createVoiceReply(language)
         : await askJey(entryText, privacy, language);
+      await diarySave;
       setMessages((current) => [
         ...current,
         createDiaryMessage('buddy', reply.text, 'mine'),

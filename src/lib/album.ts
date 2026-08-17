@@ -1,7 +1,7 @@
 import type { DiaryMessage, PrivacyMode } from './diaryTypes';
 import { detectEmotion, type Emotion } from './emotionReply';
 import type { Language } from './language';
-import { createDayReflection, createQuietReflection } from './albumReflection';
+import { createDayReflection } from './albumReflection';
 import { isDiaryEntry } from './diaryEntryFilter';
 import { createMomentDescription } from './albumMomentText';
 
@@ -25,11 +25,12 @@ export function createAlbumMoment(
   text: string,
   privacy: PrivacyMode,
   language: Language,
+  description = createMomentDescription(text, language),
 ): AlbumMoment {
   return {
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
-    description: createMomentDescription(text, language),
+    description,
     emotion: detectEmotion(text),
     privacy,
     textPreview: text,
@@ -45,7 +46,7 @@ export function loadDailyAlbums(language: Language): DailyAlbum[] {
   const moments = loadAlbumMoments();
   const availableMoments = moments.length > 0 ? moments : loadLegacyMoments(language);
   const diaryMoments = availableMoments.filter((moment) => isDiaryEntry(moment.textPreview));
-  if (diaryMoments.length === 0) return [createQuietAlbum(language)];
+  if (diaryMoments.length === 0) return [];
 
   const grouped = diaryMoments.reduce<Record<string, AlbumMoment[]>>(
     (albums, moment) => {
@@ -77,27 +78,10 @@ function createDaySphere(
   return {
     id: `day-sphere-${date}`,
     date: firstMoment.date,
-    description: reflection.description,
+    description: firstMoment.description || reflection.description,
     emotion: mainEmotion,
     privacy: reflection.privacy,
     textPreview: reflection.textPreview,
-  };
-}
-
-function createQuietAlbum(language: Language): DailyAlbum {
-  const date = new Date().toISOString();
-  const day = date.slice(0, 10);
-  const reflection = createQuietReflection(language);
-  return {
-    date: day,
-    sphere: {
-      id: `day-sphere-empty-${day}`,
-      date,
-      description: reflection.description,
-      emotion: 'neutral',
-      privacy: reflection.privacy,
-      textPreview: reflection.textPreview,
-    },
   };
 }
 

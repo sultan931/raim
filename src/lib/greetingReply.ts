@@ -15,6 +15,9 @@ function isGreeting(entryText: string) {
     .toLowerCase()
     .replace(/[!?.,"'’]/g, '')
     .trim();
+  const words = normalizedText.split(/\s+/).filter(Boolean);
+  if (words.length > 4) return false;
+
   const greetingWords = [
     'hi',
     'hello',

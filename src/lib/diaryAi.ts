@@ -1,5 +1,6 @@
 import { isSupabaseConfigured, supabase } from './supabase';
 import type { BuddyReply, PrivacyMode } from './diaryTypes';
+import { createActivityReply } from './activityReply';
 import { createEmotionReply } from './emotionReply';
 import { languageNames, type Language } from './language';
 
@@ -14,11 +15,15 @@ either something to continue or one small thing to change.
 You may notice patterns gently, but you cannot provide an exact diagnosis.
 Notice the likely emotion first: joy, pride, sadness, anger, worry, loneliness, tiredness, or conflict.
 Respond to the specific situation, not with a generic diary answer.
+If the child names a concrete event, place, person, activity, object, or photo,
+mention that concrete topic in your reply before asking a question.
 If the child mentions a simple plan or wish, like swimming, walking, eating, resting, or sleeping,
 respond to that activity directly before asking a gentle question.
 If the day was hard but also had good moments, name both: validate the hard part,
 then remind the child of the good things they did without dismissing their feelings.
 If the child only greets you, greet them back warmly and invite them to share.
+If the child starts with a greeting but also tells you something real after it,
+briefly acknowledge the greeting and respond mainly to the real topic.
 Ask one gentle question that helps the child express what is difficult to say.
 Never reveal private diary details to a parent.
 Return only JSON: {"text":"buddy reply","parentHint":"short broad hint or empty string"}.
@@ -31,6 +36,9 @@ export async function askJey(
   privacy: PrivacyMode,
   language: Language,
 ): Promise<BuddyReply> {
+  const activityReply = createActivityReply(entryText, privacy, language);
+  if (activityReply) return activityReply;
+
   if (!isSupabaseConfigured) {
     return fallbackReply(entryText, privacy, language);
   }
