@@ -1,3 +1,4 @@
+import { preparePhoto } from '../lib/photoCompression';
 import './PhotoButton.css';
 
 type PhotoButtonProps = {
@@ -5,18 +6,16 @@ type PhotoButtonProps = {
 };
 
 export function PhotoButton({ onPhotoReady }: PhotoButtonProps) {
-  function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        onPhotoReady(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
-    event.target.value = '';
+    try {
+      const photoUrl = await preparePhoto(file);
+      onPhotoReady(photoUrl);
+    } finally {
+      event.target.value = '';
+    }
   }
 
   return (

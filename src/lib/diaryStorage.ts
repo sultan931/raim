@@ -7,6 +7,7 @@ export const languageStorageKey = 'fenna-language';
 const welcomeId = 'fenna-welcome';
 const legacyWelcomeId = 'lumi-welcome';
 const legacyMessageStorageKey = 'lumi-chat-diary';
+const maxSavedPhotoLength = 900_000;
 
 export function loadMessages(language: Language): DiaryMessage[] {
   const savedMessages =
@@ -17,7 +18,7 @@ export function loadMessages(language: Language): DiaryMessage[] {
   try {
     const parsed = JSON.parse(savedMessages) as DiaryMessage[];
     return parsed.length > 0
-      ? translateWelcomeMessage(parsed, language)
+      ? translateWelcomeMessage(removeOversizedPhotos(parsed), language)
       : [createWelcomeMessage(language)];
   } catch {
     return [createWelcomeMessage(language)];
@@ -38,6 +39,22 @@ export function translateWelcomeMessage(
   );
 }
 
+export function saveMessages(messages: DiaryMessage[]) {
+  try {
+    localStorage.setItem(messageStorageKey, JSON.stringify(messages));
+  } catch {
+    const messagesWithoutPhotos = messages.map((message) => ({
+      ...message,
+      photoUrl: undefined,
+    }));
+    try {
+      localStorage.setItem(messageStorageKey, JSON.stringify(messagesWithoutPhotos));
+    } catch {
+      localStorage.removeItem(messageStorageKey);
+    }
+  }
+}
+
 export async function hydrateAudioUrls(
   messages: DiaryMessage[],
   setAudioUrls: (urls: Record<string, string>) => void,
@@ -53,6 +70,14 @@ export async function hydrateAudioUrls(
   );
 
   setAudioUrls(Object.fromEntries(audioEntries.filter((entry) => entry !== null)));
+}
+
+function removeOversizedPhotos(messages: DiaryMessage[]) {
+  return messages.map((message) =>
+    message.photoUrl && message.photoUrl.length > maxSavedPhotoLength
+      ? { ...message, photoUrl: undefined }
+      : message,
+  );
 }
 
 function createWelcomeMessage(language: Language): DiaryMessage {

@@ -12,7 +12,7 @@ import {
   hydrateAudioUrls,
   languageStorageKey,
   loadLanguage,
-  messageStorageKey,
+  saveMessages,
   translateWelcomeMessage,
 } from '../lib/diaryStorage';
 import { loadInitialMessages } from '../lib/loadInitialMessages';
@@ -51,7 +51,7 @@ export function HomePage() {
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem(messageStorageKey, JSON.stringify(messages));
+    saveMessages(messages);
     void hydrateAudioUrls(messages, setAudioUrls);
   }, [messages]);
 
