@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { rememberRegisteredUser } from '../lib/authStatus';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 import './Auth.css';
@@ -34,6 +35,7 @@ export function Auth({ onSignupSuccess }: AuthProps) {
       if (error) setMessage(error.message);
       else if (mode === 'signup') {
         setMessage('Готово! Проверь почту, если нужна подтверждалка.');
+        rememberRegisteredUser();
         onSignupSuccess?.();
       }
     } catch {

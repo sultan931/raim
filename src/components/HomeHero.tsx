@@ -11,6 +11,7 @@ type HomeHeroProps = {
     diaryName: string;
     headline: string;
     intro: string;
+    logoutButton: string;
     registerButton: string;
   };
   language: Language;
@@ -34,7 +35,7 @@ export function HomeHero({
       <div className="hero-side">
         <div className="hero-controls">
           <LanguageSelector value={language} onChange={onLanguageChange} />
-          <RegisterButton label={labels.registerButton} />
+          <RegisterButton label={labels.registerButton} logoutLabel={labels.logoutButton} />
         </div>
         <div className="hero-buddy">
           <BuddyAvatar moodLabel={moodLabel} />
