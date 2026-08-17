@@ -8,6 +8,7 @@ import './HomeHero.css';
 type HomeHeroProps = {
   labels: {
     albumsButton: string;
+    confirmLogoutButton: string;
     diaryName: string;
     headline: string;
     intro: string;
@@ -35,7 +36,11 @@ export function HomeHero({
       <div className="hero-side">
         <div className="hero-controls">
           <LanguageSelector value={language} onChange={onLanguageChange} />
-          <RegisterButton label={labels.registerButton} logoutLabel={labels.logoutButton} />
+          <RegisterButton
+            confirmLogoutLabel={labels.confirmLogoutButton}
+            label={labels.registerButton}
+            logoutLabel={labels.logoutButton}
+          />
         </div>
         <div className="hero-buddy">
           <BuddyAvatar moodLabel={moodLabel} />

@@ -9,12 +9,14 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import './RegisterButton.css';
 
 type RegisterButtonProps = {
+  confirmLogoutLabel: string;
   label: string;
   logoutLabel: string;
 };
 
-export function RegisterButton({ label, logoutLabel }: RegisterButtonProps) {
+export function RegisterButton({ confirmLogoutLabel, label, logoutLabel }: RegisterButtonProps) {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [needsLogoutConfirm, setNeedsLogoutConfirm] = useState(false);
 
   useEffect(() => {
     if (!isSupabaseConfigured) return undefined;
@@ -40,16 +42,35 @@ export function RegisterButton({ label, logoutLabel }: RegisterButtonProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!needsLogoutConfirm) return undefined;
+
+    const resetTimer = window.setTimeout(() => setNeedsLogoutConfirm(false), 3500);
+    return () => window.clearTimeout(resetTimer);
+  }, [needsLogoutConfirm]);
+
   async function handleLogout() {
+    if (!needsLogoutConfirm) {
+      setNeedsLogoutConfirm(true);
+      return;
+    }
+
     await supabase.auth.signOut();
     forgetRegisteredUser();
     setIsSignedIn(false);
+    setNeedsLogoutConfirm(false);
   }
 
   if (isSignedIn) {
     return (
-      <button className="register-button" onClick={handleLogout} type="button">
-        {logoutLabel}
+      <button
+        className={
+          needsLogoutConfirm ? 'register-button register-button--confirm' : 'register-button'
+        }
+        onClick={handleLogout}
+        type="button"
+      >
+        {needsLogoutConfirm ? confirmLogoutLabel : logoutLabel}
       </button>
     );
   }

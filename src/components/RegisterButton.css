@@ -16,3 +16,9 @@
 .register-button:hover {
   border-color: var(--clay);
 }
+
+.register-button--confirm {
+  border-color: var(--clay);
+  background: var(--clay);
+  color: #18110e;
+}
