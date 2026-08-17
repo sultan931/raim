@@ -16,19 +16,19 @@ const system = [
 ].join('\n');
 
 export async function createDailyBuddySummary(moment: AlbumMoment, language: Language) {
-  if (!isDiaryEntry(`${moment.description} ${moment.textPreview}`)) {
+  const diaryText = moment.textPreview;
+
+  if (!isDiaryEntry(diaryText)) {
     return shortNotEnoughText[language];
   }
   if (!isSupabaseConfigured) return createLocalDailySummary(moment, language);
 
   const prompt = [
     `Answer only in ${languageNames[language]}.`,
-    'Daily summary:',
-    moment.description,
-    'Mood reflection:',
-    moment.textPreview,
+    'Original diary entry:',
+    diaryText,
     `Detected mood: ${moment.emotion}.`,
-    'Use the concrete activity, place, person, or event from the mood reflection.',
+    'Use the concrete activity, place, person, or event from the original diary entry.',
     'Do not answer with a generic greeting or a generic mood analysis.',
     'If the summary is only a greeting or small talk, do not make a big analysis.',
     'Return 3 very short parts: takeaway, follow-up question, action plan.',
@@ -39,7 +39,7 @@ export async function createDailyBuddySummary(moment: AlbumMoment, language: Lan
       body: { prompt, system },
     });
 
-    if (error || !isTextResponse(data) || !data.text.trim()) {
+    if (error || !isTextResponse(data) || !isUsefulSummary(data.text, diaryText)) {
       return createLocalDailySummary(moment, language);
     }
 
@@ -96,6 +96,29 @@ function getShortTopic(text: string) {
   return firstSentence.length > 90 ? `${firstSentence.slice(0, 87).trim()}...` : firstSentence;
 }
 
+function isUsefulSummary(summary: string, diaryText: string) {
+  const cleanSummary = summary.trim();
+  if (!cleanSummary) return false;
+
+  const keywords = getKeywords(diaryText);
+  if (keywords.length === 0) return true;
+
+  const normalizedSummary = normalizeText(cleanSummary);
+  return keywords.some((keyword) => normalizedSummary.includes(keyword));
+}
+
+function getKeywords(text: string) {
+  return normalizeText(stripGreeting(text))
+    .split(/\s+/)
+    .map((word) => word.replace(/[^a-zа-яёәғқңөұүһі]/gi, ''))
+    .filter((word) => word.length >= 4 && !stopWords.has(word))
+    .slice(0, 12);
+}
+
+function normalizeText(text: string) {
+  return text.toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+}
+
 function stripGreeting(text: string) {
   return text
     .replace(/^(привет|здравствуй|hi|hello|hey)[,!.\s]+/i, '')
@@ -103,3 +126,20 @@ function stripGreeting(text: string) {
     .replace(/^(сегодня|today)\s+/i, '')
     .trim() || text;
 }
+
+const stopWords = new Set([
+  'привет',
+  'сегодня',
+  'очень',
+  'хорошо',
+  'понравилось',
+  'hello',
+  'today',
+  'very',
+  'really',
+  'good',
+  'liked',
+  'сәлем',
+  'бүгін',
+  'жақсы',
+]);

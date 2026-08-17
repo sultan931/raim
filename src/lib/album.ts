@@ -78,7 +78,7 @@ function createDaySphere(
   return {
     id: `day-sphere-${date}`,
     date: firstMoment.date,
-    description: firstMoment.description || reflection.description,
+    description: createMomentDescription(createDayTextPreview(moments), language),
     emotion: mainEmotion,
     privacy: reflection.privacy,
     textPreview: createDayTextPreview(moments),
