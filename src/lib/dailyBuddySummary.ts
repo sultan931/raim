@@ -14,10 +14,10 @@ const system = [
 ].join('\n');
 
 export async function createDailyBuddySummary(moment: AlbumMoment, language: Language) {
-  if (!isSupabaseConfigured) return '';
   if (!isDiaryEntry(`${moment.description} ${moment.textPreview}`)) {
     return shortNotEnoughText[language];
   }
+  if (!isSupabaseConfigured) return createLocalDailySummary(moment, language);
 
   const prompt = [
     `Answer only in ${languageNames[language]}.`,
@@ -35,10 +35,13 @@ export async function createDailyBuddySummary(moment: AlbumMoment, language: Lan
       body: { prompt, system },
     });
 
-    if (error || !isTextResponse(data)) return '';
+    if (error || !isTextResponse(data) || !data.text.trim()) {
+      return createLocalDailySummary(moment, language);
+    }
+
     return data.text;
   } catch {
-    return '';
+    return createLocalDailySummary(moment, language);
   }
 }
 
@@ -55,4 +58,36 @@ function isTextResponse(data: unknown): data is { text: string } {
     'text' in data &&
     typeof (data as { text?: unknown }).text === 'string'
   );
+}
+
+function createLocalDailySummary(moment: AlbumMoment, language: Language) {
+  const topic = getShortTopic(moment.textPreview || moment.description);
+
+  if (language === 'ru') {
+    return [
+      `Вывод: сегодня тебе запомнилось ${topic}.`,
+      'Вопрос: что в этом моменте было самым приятным?',
+      'План: сохрани это чувство и завтра добавь ещё один маленький хороший момент.',
+    ].join('\n');
+  }
+
+  if (language === 'kk') {
+    return [
+      `Қорытынды: бүгін есіңде қалғаны - ${topic}.`,
+      'Сұрақ: осы сәттің ең жылы бөлігі қандай болды?',
+      'Жоспар: осы сезімді сақтап, ертең тағы бір жақсы сәт қос.',
+    ].join('\n');
+  }
+
+  return [
+    `Takeaway: today, ${topic} stood out to you.`,
+    'Question: what felt best about that moment?',
+    'Plan: keep that feeling and add one more small good moment tomorrow.',
+  ].join('\n');
+}
+
+function getShortTopic(text: string) {
+  const cleanText = text.replace(/\s+/g, ' ').trim();
+  const firstSentence = cleanText.split(/[.!?。]/)[0]?.trim() || cleanText;
+  return firstSentence.length > 90 ? `${firstSentence.slice(0, 87).trim()}...` : firstSentence;
 }
