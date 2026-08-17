@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatComposer } from '../components/ChatComposer';
 import { ChatThread } from '../components/ChatThread';
 import { HomeHero } from '../components/HomeHero';
 import { JeyIntro } from '../components/JeyIntro';
 import { ParentHintCard } from '../components/ParentHintCard';
 import { askJey } from '../lib/diaryAi';
-import { saveRecording } from '../lib/audioStore';
+import { deleteRecording, saveRecording } from '../lib/audioStore';
 import { transcribeAudio } from '../lib/audioTranscription';
 import { createDiaryMessage } from '../lib/createDiaryMessage';
 import {
@@ -17,6 +17,7 @@ import {
 } from '../lib/diaryStorage';
 import { loadInitialMessages } from '../lib/loadInitialMessages';
 import { uiText, type Language } from '../lib/language';
+import { recognitionLanguages, shouldShowJeyIntro } from '../lib/homePageSettings';
 import type { PrivacyMode } from '../lib/diaryTypes';
 import { saveIfDiaryEntry } from '../lib/saveDiaryEntry';
 import { useObjectUrl } from '../lib/useObjectUrl';
@@ -40,11 +41,8 @@ export function HomePage() {
   const recordingPreviewUrl = useObjectUrl(recording);
 
   const canSend = text.trim().length >= 4 || recording !== null || photoUrl !== '';
-  const moodLabel = useMemo(() => {
-    if (privacy === 'mine') return t.mineMood;
-    if (privacy === 'mood') return t.moodMood;
-    return t.parentMood;
-  }, [privacy, t]);
+  const moodLabel =
+    privacy === 'mine' ? t.mineMood : privacy === 'mood' ? t.moodMood : t.parentMood;
 
   useEffect(() => {
     localStorage.setItem(languageStorageKey, language);
@@ -107,6 +105,12 @@ export function HomePage() {
     if (transcript) setText(transcript);
   }
 
+  function handleDeleteMessage(messageId: string) {
+    const deletedMessage = messages.find((message) => message.id === messageId);
+    if (deletedMessage?.audioId) void deleteRecording(deletedMessage.audioId);
+    setMessages((current) => current.filter((message) => message.id !== messageId));
+  }
+
   return (
     <main className="diary-page">
       {showIntro && <JeyIntro onDone={() => setShowIntro(false)} />}
@@ -120,7 +124,7 @@ export function HomePage() {
 
       <section className="diary-layout">
         <div className="chat-column">
-          <ChatThread audioUrls={audioUrls} labels={t} messages={messages} />
+          <ChatThread audioUrls={audioUrls} labels={t} messages={messages} onDeleteMessage={handleDeleteMessage} />
           <ChatComposer
             canSend={canSend}
             hasRecording={recording !== null}
@@ -142,25 +146,4 @@ export function HomePage() {
       </section>
     </main>
   );
-}
-
-const recognitionLanguages: Record<Language, string> = {
-  en: 'en-US',
-  ru: 'ru-RU',
-  kk: 'kk-KZ',
-};
-
-const jeyIntroSeenKey = 'jey-intro-seen';
-
-function shouldShowJeyIntro() {
-  try {
-    if (sessionStorage.getItem(jeyIntroSeenKey) === 'true') {
-      return false;
-    }
-
-    sessionStorage.setItem(jeyIntroSeenKey, 'true');
-    return true;
-  } catch {
-    return true;
-  }
 }

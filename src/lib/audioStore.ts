@@ -18,6 +18,14 @@ export async function loadRecording(id: string): Promise<Blob | null> {
   return result ?? null;
 }
 
+export async function deleteRecording(id: string) {
+  const db = await openAudioDb();
+  const transaction = db.transaction(storeName, 'readwrite');
+  transaction.objectStore(storeName).delete(id);
+  await waitForTransaction(transaction);
+  db.close();
+}
+
 function openAudioDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName, 1);

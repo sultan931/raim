@@ -7,15 +7,22 @@ type ChatThreadProps = {
   labels: {
     buddyName: string;
     conversationLabel: string;
+    deleteMessage: string;
     me: string;
     moodBadge: string;
     onlyMine: string;
     parentBadge: string;
   };
   messages: DiaryMessage[];
+  onDeleteMessage: (messageId: string) => void;
 };
 
-export function ChatThread({ audioUrls, labels, messages }: ChatThreadProps) {
+export function ChatThread({
+  audioUrls,
+  labels,
+  messages,
+  onDeleteMessage,
+}: ChatThreadProps) {
   const threadRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -36,7 +43,18 @@ export function ChatThread({ audioUrls, labels, messages }: ChatThreadProps) {
           <div className="message-meta">
             <span>{message.role === 'child' ? labels.me : labels.buddyName}</span>
             {message.role === 'child' && (
-              <small>{getPrivacyLabel(message.privacy, labels)}</small>
+              <div className="message-meta__actions">
+                <small>{getPrivacyLabel(message.privacy, labels)}</small>
+                <button
+                  aria-label={labels.deleteMessage}
+                  className="message-delete"
+                  onClick={() => onDeleteMessage(message.id)}
+                  title={labels.deleteMessage}
+                  type="button"
+                >
+                  ×
+                </button>
+              </div>
             )}
           </div>
           <p>{message.text}</p>
