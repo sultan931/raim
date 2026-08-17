@@ -15,7 +15,12 @@ function hasDiarySignal(text: string) {
 
 function isSmallTalk(text: string) {
   const cleanText = text.toLowerCase().replace(/[!?.,"'’]/g, '').trim();
-  return smallTalkPhrases.some((phrase) => cleanText === phrase || cleanText.startsWith(phrase));
+  const wordCount = countWords(cleanText);
+
+  return smallTalkPhrases.some((phrase) => {
+    if (cleanText === phrase) return true;
+    return wordCount <= 4 && cleanText.startsWith(phrase);
+  });
 }
 
 const smallTalkPhrases = [
