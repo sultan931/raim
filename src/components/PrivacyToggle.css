@@ -8,14 +8,76 @@
   background: var(--field);
 }
 
+.privacy-toggle__option {
+  position: relative;
+  min-width: 0;
+}
+
 .privacy-toggle button {
+  width: 100%;
   padding: 10px 8px;
   border-radius: 6px;
   background: transparent;
   color: var(--soft);
 }
 
+.privacy-toggle button.privacy-toggle__choice {
+  display: grid;
+  place-items: center;
+  min-height: 46px;
+  padding: 12px 28px 12px 8px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
 .privacy-toggle button.active {
   background: #19362f;
   color: #d7fff0;
+}
+
+.privacy-toggle button.privacy-toggle__help {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid rgba(143, 199, 180, 0.26);
+  border-radius: 999px;
+  background: rgba(13, 17, 16, 0.86);
+  color: var(--mint);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+@media (max-width: 420px) {
+  .privacy-toggle {
+    gap: 4px;
+  }
+
+  .privacy-toggle button.privacy-toggle__choice {
+    min-height: 54px;
+    padding-right: 24px;
+    font-size: 13px;
+  }
+
+  .privacy-toggle button.privacy-toggle__help {
+    width: 17px;
+    height: 17px;
+    font-size: 11px;
+  }
+}
+
+.privacy-toggle__explanation {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(143, 199, 180, 0.18);
+  border-radius: 8px;
+  background: rgba(13, 17, 16, 0.72);
+  color: var(--soft);
+  font-size: 13px;
+  line-height: 1.45;
 }

@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'wouter';
 import { Auth } from '../components/Auth';
+import { JeyCelebration } from '../components/JeyCelebration';
 import { loadLanguage } from '../lib/diaryStorage';
 import { uiText } from '../lib/language';
 import './RegisterPage.css';
 
 export function RegisterPage() {
   const t = uiText[loadLanguage()];
+  const [showCelebration, setShowCelebration] = useState(false);
 
   return (
     <main className="register-page">
@@ -18,7 +21,13 @@ export function RegisterPage() {
           {t.backToDiary}
         </Link>
       </header>
-      <Auth />
+      <Auth onSignupSuccess={() => setShowCelebration(true)} />
+      {showCelebration && (
+        <JeyCelebration
+          message={t.registerCongrats}
+          onDone={() => setShowCelebration(false)}
+        />
+      )}
     </main>
   );
 }

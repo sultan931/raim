@@ -3,8 +3,12 @@ import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 import './Auth.css';
 
+type AuthProps = {
+  onSignupSuccess?: () => void;
+};
+
 // Вход и регистрация по email + паролю. Это пример — Codex поможет улучшить (Google-вход и т.д.).
-export function Auth() {
+export function Auth({ onSignupSuccess }: AuthProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -28,7 +32,10 @@ export function Auth() {
           : supabase.auth.signInWithPassword({ email, password });
       const { error } = await fn;
       if (error) setMessage(error.message);
-      else if (mode === 'signup') setMessage('Готово! Проверь почту, если нужна подтверждалка.');
+      else if (mode === 'signup') {
+        setMessage('Готово! Проверь почту, если нужна подтверждалка.');
+        onSignupSuccess?.();
+      }
     } catch {
       setMessage('Что-то пошло не так. Попробуй ещё раз.');
     } finally {

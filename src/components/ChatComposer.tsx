@@ -10,10 +10,13 @@ type ChatComposerProps = {
   isSending: boolean;
   labels: {
     diaryLabel: string;
+    mineHelp: string;
+    moodHelp: string;
     micNeeded: string;
     moodOnly: string;
     noRecording: string;
     onlyMine: string;
+    parentHelp: string;
     parentOk: string;
     placeholder: string;
     record: string;
