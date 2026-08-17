@@ -81,8 +81,15 @@ function createDaySphere(
     description: firstMoment.description || reflection.description,
     emotion: mainEmotion,
     privacy: reflection.privacy,
-    textPreview: reflection.textPreview,
+    textPreview: createDayTextPreview(moments),
   };
+}
+
+function createDayTextPreview(moments: AlbumMoment[]) {
+  return moments
+    .map((moment) => moment.textPreview)
+    .filter(Boolean)
+    .join('\n');
 }
 
 function getDominantEmotion(moments: AlbumMoment[]): Emotion {

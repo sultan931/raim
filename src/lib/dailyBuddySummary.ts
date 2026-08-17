@@ -8,6 +8,8 @@ const system = [
   'Tone: friendly and understanding.',
   'You help a kid follow up their daily summary and important topics.',
   'Make short takeaways and a small further action plan.',
+  'Stay on the exact topic from the diary entry.',
+  'Mention concrete details from the child instead of generic mood phrases.',
   'The plan can suggest either continuing something or changing one small thing.',
   'You may notice patterns, but you cannot provide an exact diagnosis.',
   'Keep it kind, short, and practical.',
@@ -26,6 +28,8 @@ export async function createDailyBuddySummary(moment: AlbumMoment, language: Lan
     'Mood reflection:',
     moment.textPreview,
     `Detected mood: ${moment.emotion}.`,
+    'Use the concrete activity, place, person, or event from the mood reflection.',
+    'Do not answer with a generic greeting or a generic mood analysis.',
     'If the summary is only a greeting or small talk, do not make a big analysis.',
     'Return 3 very short parts: takeaway, follow-up question, action plan.',
   ].join('\n');
@@ -87,7 +91,15 @@ function createLocalDailySummary(moment: AlbumMoment, language: Language) {
 }
 
 function getShortTopic(text: string) {
-  const cleanText = text.replace(/\s+/g, ' ').trim();
+  const cleanText = stripGreeting(text.replace(/\s+/g, ' ').trim());
   const firstSentence = cleanText.split(/[.!?。]/)[0]?.trim() || cleanText;
   return firstSentence.length > 90 ? `${firstSentence.slice(0, 87).trim()}...` : firstSentence;
+}
+
+function stripGreeting(text: string) {
+  return text
+    .replace(/^(привет|здравствуй|hi|hello|hey)[,!.\s]+/i, '')
+    .replace(/^(как дела|how are you)[?!.:\s]+/i, '')
+    .replace(/^(сегодня|today)\s+/i, '')
+    .trim() || text;
 }
