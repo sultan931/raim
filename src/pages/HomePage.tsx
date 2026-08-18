@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { ChatComposer } from '../components/ChatComposer';
 import { ChatThread } from '../components/ChatThread';
-import { HomeHero } from '../components/HomeHero';
+import { HomeDashboard } from '../components/HomeDashboard';
 import { JeyIntro } from '../components/JeyIntro';
 import { ParentHintCard } from '../components/ParentHintCard';
 import { ParentInvitePanel } from '../components/ParentInvitePanel';
@@ -10,13 +10,7 @@ import { askJey } from '../lib/diaryAi';
 import { deleteRecording, saveRecording } from '../lib/audioStore';
 import { transcribeAudio } from '../lib/audioTranscription';
 import { createDiaryMessage } from '../lib/createDiaryMessage';
-import {
-  hydrateAudioUrls,
-  languageStorageKey,
-  loadLanguage,
-  saveMessages,
-  translateWelcomeMessage,
-} from '../lib/diaryStorage';
+import { hydrateAudioUrls, languageStorageKey, loadLanguage, saveMessages, translateWelcomeMessage } from '../lib/diaryStorage';
 import { loadInitialMessages } from '../lib/loadInitialMessages';
 import { uiText, type Language } from '../lib/language';
 import { recognitionLanguages, shouldShowJeyIntro } from '../lib/homePageSettings';
@@ -30,7 +24,7 @@ import './HomePage.css';
 
 export function HomePage() {
   const [, navigate] = useLocation();
-  const [language, setLanguage] = useState<Language>(() => loadLanguage());
+  const [language] = useState<Language>(() => loadLanguage());
   const [messages, setMessages] = useState(() => loadInitialMessages());
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
   const [text, setText] = useState('');
@@ -46,8 +40,6 @@ export function HomePage() {
   const recordingPreviewUrl = useObjectUrl(recording);
 
   const canSend = text.trim().length >= 4 || recording !== null || photoUrl !== '';
-  const moodLabel =
-    privacy === 'mine' ? t.mineMood : privacy === 'mood' ? t.moodMood : t.parentMood;
 
   useEffect(() => {
     localStorage.setItem(languageStorageKey, language);
@@ -127,12 +119,7 @@ export function HomePage() {
     <main className="diary-page">
       {showIntro && <JeyIntro onDone={() => setShowIntro(false)} />}
 
-      <HomeHero
-        labels={t}
-        language={language}
-        moodLabel={moodLabel}
-        onLanguageChange={setLanguage}
-      />
+      <HomeDashboard />
 
       <section className="diary-layout">
         <div className="chat-column">
