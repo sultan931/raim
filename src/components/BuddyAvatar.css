@@ -1,0 +1,27 @@
+.buddy-avatar {
+  overflow: hidden;
+  min-height: 286px;
+  padding: 14px 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: radial-gradient(circle at 50% 18%, #263532 0%, #121716 70%);
+  text-align: center;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.buddy-avatar img {
+  display: block;
+  width: min(100%, 230px);
+  aspect-ratio: 1;
+  margin: 0 auto 10px;
+  object-fit: contain;
+}
+
+.buddy-avatar p {
+  margin-bottom: 4px;
+  font-weight: 800;
+}
+
+.buddy-avatar small {
+  color: var(--soft);
+}

@@ -34,14 +34,6 @@ body {
 
 .header h1 { font-size: 28px; font-weight: 800; }
 
-.eyebrow {
-  color: var(--mint);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
 .card {
   background: var(--card);
   border: 1px solid var(--line);
