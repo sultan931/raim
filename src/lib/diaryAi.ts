@@ -5,13 +5,18 @@ import { createEmotionReply } from './emotionReply';
 import { languageNames, type Language } from './language';
 
 const baseSystemPrompt = `
-You are Jey, a warm fox diary buddy for a child.
+You are Jey, a lifelike diary buddy for a child.
+You feel like a real, present friend: warm, attentive, specific, and natural.
 Reply with kind, simple language. Do not judge, diagnose, shame, or lecture.
 Act like a friendly and understanding buddy, not a doctor or therapist.
+Read the child's exact words before answering.
+First acknowledge the concrete topic, then name the likely feeling, then offer one small helpful idea.
+Advice must be practical and gentle: one tiny next step, not a lecture or a list.
+If the child sounds happy, join the happiness and help them notice what made it good.
+If the child sounds upset, validate the feeling before advice.
+If the child asks what to do, give one clear suggestion and ask whether it fits.
 Help the child name feelings and say hard things more clearly.
 Help the child follow up on their daily summary and important topics over time.
-When useful, make one short takeaway and one tiny action plan:
-either something to continue or one small thing to change.
 You may notice patterns gently, but you cannot provide an exact diagnosis.
 Notice the likely emotion first: joy, pride, sadness, anger, worry, loneliness, tiredness, or conflict.
 Respond to the specific situation, not with a generic diary answer.
@@ -25,6 +30,8 @@ If the child only greets you, greet them back warmly and invite them to share.
 If the child starts with a greeting but also tells you something real after it,
 briefly acknowledge the greeting and respond mainly to the real topic.
 Ask one gentle question that helps the child express what is difficult to say.
+Do not begin with the same stock phrases repeatedly.
+Keep the reply short: 2 to 4 natural sentences.
 Never reveal private diary details to a parent.
 Return only JSON: {"text":"buddy reply","parentHint":"short broad hint or empty string"}.
 parentHint is only for gentle broad signals like "A quiet check-in may help today."
@@ -36,9 +43,6 @@ export async function askJey(
   privacy: PrivacyMode,
   language: Language,
 ): Promise<BuddyReply> {
-  const activityReply = createActivityReply(entryText, privacy, language);
-  if (activityReply) return activityReply;
-
   if (!isSupabaseConfigured) {
     return fallbackReply(entryText, privacy, language);
   }
@@ -52,20 +56,24 @@ export async function askJey(
     entryText,
   ].join('\n');
 
-  const { data, error } = await supabase.functions.invoke('ai', {
-    body: { prompt, system: createSystemPrompt(language) },
-  });
+  try {
+    const { data, error } = await supabase.functions.invoke('ai', {
+      body: { prompt, system: createSystemPrompt(language) },
+    });
 
-  if (error || !isAiResponse(data)) {
+    if (error || !isAiResponse(data)) {
+      return fallbackReply(entryText, privacy, language);
+    }
+
+    const parsedReply = parseReply(data.text);
+    if (!parsedReply || isWrongLanguage(parsedReply, language)) {
+      return fallbackReply(entryText, privacy, language);
+    }
+
+    return parsedReply;
+  } catch {
     return fallbackReply(entryText, privacy, language);
   }
-
-  const parsedReply = parseReply(data.text);
-  if (!parsedReply || isWrongLanguage(parsedReply, language)) {
-    return fallbackReply(entryText, privacy, language);
-  }
-
-  return parsedReply;
 }
 
 function getPrivacyDescription(privacy: PrivacyMode) {
@@ -83,8 +91,10 @@ function createSystemPrompt(language: Language) {
 }
 
 function parseReply(text: string): BuddyReply | null {
+  const jsonText = extractJson(text);
+
   try {
-    const parsed = JSON.parse(text) as Partial<BuddyReply>;
+    const parsed = JSON.parse(jsonText) as Partial<BuddyReply>;
     if (typeof parsed.text !== 'string') {
       return null;
     }
@@ -98,12 +108,21 @@ function parseReply(text: string): BuddyReply | null {
   }
 }
 
+function extractJson(text: string) {
+  const trimmedText = text.trim();
+  const jsonMatch = trimmedText.match(/\{[\s\S]*\}/);
+  return jsonMatch?.[0] ?? trimmedText;
+}
+
 function fallbackReply(
   entryText: string,
   privacy: PrivacyMode,
   language: Language,
 ): BuddyReply {
-  return createEmotionReply(entryText, privacy, language);
+  return (
+    createActivityReply(entryText, privacy, language) ??
+    createEmotionReply(entryText, privacy, language)
+  );
 }
 
 function isAiResponse(data: unknown): data is { text: string } {
