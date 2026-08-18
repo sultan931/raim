@@ -22,7 +22,7 @@ export async function createParentInvite(childName: string) {
   });
 
   if (error) return '';
-  return `${window.location.origin}/invite/${token}/${createInviteSlug(cleanChildName)}`;
+  return `${window.location.origin}/api/invite/${token}/${createInviteSlug(cleanChildName)}`;
 }
 
 export async function loadInvite(token: string): Promise<ParentInvite | null> {
