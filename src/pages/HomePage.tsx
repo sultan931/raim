@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
-import { ChatComposer } from '../components/ChatComposer';
-import { ChatThread } from '../components/ChatThread';
+import { HomeDiarySection } from '../components/HomeDiarySection';
 import { HomeHero } from '../components/HomeHero';
 import { JeyIntro } from '../components/JeyIntro';
-import { ParentHintCard } from '../components/ParentHintCard';
-import { ParentInvitePanel } from '../components/ParentInvitePanel';
 import { askJey } from '../lib/diaryAi';
 import { deleteRecording, saveRecording } from '../lib/audioStore';
 import { transcribeAudio } from '../lib/audioTranscription';
@@ -25,11 +22,13 @@ import { saveIfDiaryEntry } from '../lib/saveDiaryEntry';
 import { shareDiaryWithParents } from '../lib/parentSharing';
 import { canUsePrivateActions } from '../lib/privateActions';
 import { useObjectUrl } from '../lib/useObjectUrl';
+import { useCurrentProfile } from '../lib/useCurrentProfile';
 import { createVoiceReply } from '../lib/voiceReply';
 import './HomePage.css';
 
 export function HomePage() {
   const [, navigate] = useLocation();
+  const { profile } = useCurrentProfile();
   const [language, setLanguage] = useState<Language>(() => loadLanguage());
   const [messages, setMessages] = useState(() => loadInitialMessages());
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
@@ -59,6 +58,10 @@ export function HomePage() {
     saveMessages(messages);
     void hydrateAudioUrls(messages, setAudioUrls);
   }, [messages]);
+
+  useEffect(() => {
+    if (profile?.role === 'parent') navigate('/parent');
+  }, [navigate, profile?.role]);
 
   async function handleSend() {
     if (!canSend || isSending) return;
@@ -123,40 +126,24 @@ export function HomePage() {
     setMessages((current) => current.filter((message) => message.id !== messageId));
   }
 
+  if (profile?.role === 'parent') return null;
+
   return (
     <main className="diary-page">
       {showIntro && <JeyIntro onDone={() => setShowIntro(false)} />}
 
       <HomeHero
-        labels={t}
-        language={language}
-        moodLabel={moodLabel}
-        onLanguageChange={setLanguage}
+        labels={t} language={language} moodLabel={moodLabel} onLanguageChange={setLanguage}
       />
-
-      <section className="diary-layout">
-        <div className="chat-column">
-          <ParentInvitePanel />
-          <ChatThread audioUrls={audioUrls} labels={t} messages={messages} onDeleteMessage={handleDeleteMessage} />
-          <ChatComposer
-            canSend={canSend}
-            hasRecording={recording !== null}
-            isSending={isSending}
-            labels={t}
-            onPhotoReady={setPhotoUrl}
-            onPrivacyChange={setPrivacy}
-            onRecordingReady={handleRecordingReady}
-            onSend={handleSend}
-            onTextChange={handleTextChange}
-            privacy={privacy}
-            photoPreviewUrl={photoUrl}
-            recognitionLanguage={recognitionLanguage}
-            recordingPreviewUrl={recordingPreviewUrl}
-            text={text}
-          />
-        </div>
-        <ParentHintCard hint={parentHint} labels={t} />
-      </section>
+      <HomeDiarySection
+        audioUrls={audioUrls} canSend={canSend} hasRecording={recording !== null}
+        isSending={isSending} labels={t} messages={messages}
+        onDeleteMessage={handleDeleteMessage} onPhotoReady={setPhotoUrl}
+        onPrivacyChange={setPrivacy} onRecordingReady={handleRecordingReady}
+        onSend={handleSend} onTextChange={handleTextChange} parentHint={parentHint}
+        photoPreviewUrl={photoUrl} privacy={privacy} recognitionLanguage={recognitionLanguage}
+        recordingPreviewUrl={recordingPreviewUrl} text={text}
+      />
     </main>
   );
 }

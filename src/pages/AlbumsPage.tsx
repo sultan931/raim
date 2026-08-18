@@ -1,15 +1,25 @@
-import { Link } from 'wouter';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'wouter';
 import { AlbumCard } from '../components/AlbumCard';
 import { MoodFace } from '../components/MoodFace';
 import { loadDailyAlbums } from '../lib/album';
 import { loadLanguage } from '../lib/diaryStorage';
 import { uiText } from '../lib/language';
+import { useCurrentProfile } from '../lib/useCurrentProfile';
 import './AlbumsPage.css';
 
 export function AlbumsPage() {
+  const [, navigate] = useLocation();
+  const { profile } = useCurrentProfile();
   const language = loadLanguage();
   const t = uiText[language];
   const albums = loadDailyAlbums(language);
+
+  useEffect(() => {
+    if (profile?.role === 'parent') navigate('/parent');
+  }, [navigate, profile?.role]);
+
+  if (profile?.role === 'parent') return null;
 
   return (
     <main className="albums-page">

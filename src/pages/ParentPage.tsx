@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { askParentJey } from '../lib/parentAi';
 import { loadFamilyLinks } from '../lib/parentLinks';
 import { loadParentSharedEvents, type ParentSharedEvent } from '../lib/parentSharing';
 import { loadLanguage } from '../lib/diaryStorage';
+import { useCurrentProfile } from '../lib/useCurrentProfile';
 import './ParentPage.css';
 
 type ChatMessage = {
@@ -12,7 +13,9 @@ type ChatMessage = {
 };
 
 export function ParentPage() {
+  const [, navigate] = useLocation();
   const language = loadLanguage();
+  const { isLoading: isProfileLoading, profile } = useCurrentProfile();
   const [events, setEvents] = useState<ParentSharedEvent[]>([]);
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -25,6 +28,16 @@ export function ParentPage() {
   const [isThinking, setIsThinking] = useState(false);
 
   useEffect(() => {
+    if (isProfileLoading) return;
+    if (profile?.role === 'kid') {
+      navigate('/');
+      return;
+    }
+    if (profile?.role !== 'parent') {
+      navigate('/register');
+      return;
+    }
+
     async function load() {
       setIsLoading(true);
       const links = await loadFamilyLinks();
@@ -34,9 +47,19 @@ export function ParentPage() {
     }
 
     void load();
-  }, []);
+  }, [isProfileLoading, navigate, profile?.role]);
 
   const visibleEvents = useMemo(() => events.slice(0, 6), [events]);
+
+  if (isProfileLoading) {
+    return (
+      <main className="parent-page">
+        <p className="parent-muted">Jey проверяет аккаунт...</p>
+      </main>
+    );
+  }
+
+  if (profile?.role !== 'parent') return null;
 
   async function handleAsk() {
     const cleanQuestion = question.trim();
