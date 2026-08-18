@@ -5,7 +5,7 @@ import { saveCurrentProfile } from '../lib/roles';
 import './InvitePage.css';
 
 type InvitePageProps = {
-  params: { token?: string };
+  params: { slug?: string; token?: string };
 };
 
 export function InvitePage({ params }: InvitePageProps) {
@@ -19,7 +19,7 @@ export function InvitePage({ params }: InvitePageProps) {
       setInvite(loadedInvite);
       setMessage(
         loadedInvite
-          ? `${loadedInvite.child_name} wants to add you as a parent.`
+          ? `${loadedInvite.child_name} invites you to be their parent in Jey diary.`
           : 'Это приглашение не найдено или уже истекло.',
       );
     });

@@ -14,14 +14,15 @@ export async function createParentInvite(childName: string) {
   if (!childId) return '';
 
   const token = crypto.randomUUID();
+  const cleanChildName = childName.trim() || 'Someone';
   const { error } = await supabase.from('parent_invites').insert({
     child_id: childId,
     token,
-    child_name: childName.trim() || 'Someone',
+    child_name: cleanChildName,
   });
 
   if (error) return '';
-  return `${window.location.origin}/invite/${token}`;
+  return `${window.location.origin}/invite/${token}/${createInviteSlug(cleanChildName)}`;
 }
 
 export async function loadInvite(token: string): Promise<ParentInvite | null> {
@@ -68,4 +69,16 @@ function isParentInvite(data: unknown): data is ParentInvite {
     typeof (data as ParentInvite).child_name === 'string' &&
     typeof (data as ParentInvite).token === 'string'
   );
+}
+
+function createInviteSlug(childName: string) {
+  const nameSlug = childName
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9а-яёәғқңөұүһі]+/gi, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40);
+
+  return `${nameSlug || 'someone'}-invites-you`;
 }

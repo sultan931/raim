@@ -39,7 +39,7 @@ export function ParentInvitePanel() {
 
     await navigator.share({
       title: 'Jey diary parent invite',
-      text: `${childName || 'Someone'} wants to add you as a parent in Jey diary.`,
+      text: `${childName || 'Someone'} invites you to be their parent in Jey diary.`,
       url: inviteLink,
     });
   }

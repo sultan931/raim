@@ -15,6 +15,7 @@ export default function App() {
         <Route path="/" component={HomePage} />
         <Route path="/albums" component={AlbumsPage} />
         <Route path="/parent" component={ParentPage} />
+        <Route path="/invite/:token/:slug" component={InvitePage} />
         <Route path="/invite/:token" component={InvitePage} />
         <Route path="/register" component={RegisterPage} />
         <Route component={NotFoundPage} />
