@@ -27,7 +27,10 @@ export function MobileBottomNav() {
   if (isLoading) return null;
 
   return (
-    <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+    <nav
+      className={`mobile-bottom-nav mobile-bottom-nav--${navItems.length}`}
+      aria-label="Mobile navigation"
+    >
       {navItems.map((item) => {
         const isActive = item.href === location;
 
