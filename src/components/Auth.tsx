@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { rememberRegisteredUser } from '../lib/authStatus';
+import { friendlyErrorMessage } from '../lib/friendlyError';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 import './Auth.css';
@@ -32,14 +33,14 @@ export function Auth({ onSignupSuccess }: AuthProps) {
             })
           : supabase.auth.signInWithPassword({ email, password });
       const { error } = await fn;
-      if (error) setMessage(error.message);
+      if (error) setMessage(friendlyErrorMessage(error));
       else if (mode === 'signup') {
         setMessage('Готово! Проверь почту, если нужна подтверждалка.');
         rememberRegisteredUser();
         onSignupSuccess?.();
       }
     } catch {
-      setMessage('Что-то пошло не так. Попробуй ещё раз.');
+      setMessage(friendlyErrorMessage('network'));
     } finally {
       setBusy(false);
     }
@@ -53,7 +54,7 @@ export function Auth({ onSignupSuccess }: AuthProps) {
         provider: 'google',
         options: { redirectTo: window.location.origin },
       });
-      if (error) setMessage(error.message);
+      if (error) setMessage(friendlyErrorMessage(error));
     } catch {
       setMessage('Не получилось открыть Google-вход. Попробуй ещё раз.');
       setBusy(false);
@@ -69,7 +70,7 @@ export function Auth({ onSignupSuccess }: AuthProps) {
         onClick={handleGoogleAuth}
         type="button"
       >
-        Continue with Google
+        {busy ? 'Открываем вход...' : 'Continue with Google'}
       </button>
       <div className="auth-divider">or</div>
       <form onSubmit={handleSubmit} className="form">
@@ -89,7 +90,7 @@ export function Auth({ onSignupSuccess }: AuthProps) {
           required
         />
         <button type="submit" disabled={busy}>
-          {busy ? '…' : mode === 'signin' ? 'Войти' : 'Создать аккаунт'}
+          {busy ? 'Jey проверяет...' : mode === 'signin' ? 'Войти' : 'Создать аккаунт'}
         </button>
       </form>
       {message && <p className="message">{message}</p>}

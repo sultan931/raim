@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { friendlyErrorMessage } from '../lib/friendlyError';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 
@@ -15,14 +16,24 @@ export function Entries({ userEmail }: { userEmail: string }) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [title, setTitle] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   async function load() {
-    const { data, error } = await supabase
-      .from('entries')
-      .select('id, title, created_at')
-      .order('created_at', { ascending: false });
-    if (error) setError(error.message);
-    else setEntries(data ?? []);
+    setIsLoading(true);
+    setError('');
+    try {
+      const { data, error } = await supabase
+        .from('entries')
+        .select('id, title, created_at')
+        .order('created_at', { ascending: false });
+      if (error) setError(friendlyErrorMessage(error));
+      else setEntries(data ?? []);
+    } catch {
+      setError(friendlyErrorMessage('network'));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -34,18 +45,31 @@ export function Entries({ userEmail }: { userEmail: string }) {
   async function add(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
-    const { error } = await supabase.from('entries').insert({ title: title.trim() });
-    if (error) setError(error.message);
-    else {
-      setTitle('');
-      load();
+    setIsSaving(true);
+    setError('');
+    try {
+      const { error } = await supabase.from('entries').insert({ title: title.trim() });
+      if (error) setError(friendlyErrorMessage(error));
+      else {
+        setTitle('');
+        void load();
+      }
+    } catch {
+      setError(friendlyErrorMessage('network'));
+    } finally {
+      setIsSaving(false);
     }
   }
 
   async function remove(id: string) {
-    const { error } = await supabase.from('entries').delete().eq('id', id);
-    if (error) setError(error.message);
-    else load();
+    setError('');
+    try {
+      const { error } = await supabase.from('entries').delete().eq('id', id);
+      if (error) setError(friendlyErrorMessage(error));
+      else void load();
+    } catch {
+      setError(friendlyErrorMessage('network'));
+    }
   }
 
   return (
@@ -59,12 +83,16 @@ export function Entries({ userEmail }: { userEmail: string }) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <button type="submit">Добавить</button>
+        <button disabled={isSaving} type="submit">
+          {isSaving ? 'Добавляем...' : 'Добавить'}
+        </button>
       </form>
 
       {error && <p className="message">{error}</p>}
 
-      {entries.length === 0 ? (
+      {isLoading ? (
+        <p className="empty">Загружаем записи...</p>
+      ) : entries.length === 0 ? (
         <p className="empty">Пока пусто. Добавь первую запись 👆</p>
       ) : (
         <ul className="list">
