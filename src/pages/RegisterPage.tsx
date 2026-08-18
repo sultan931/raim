@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { Auth } from '../components/Auth';
 import { JeyCelebration } from '../components/JeyCelebration';
 import { loadLanguage } from '../lib/diaryStorage';
@@ -8,6 +8,7 @@ import type { AppRole } from '../lib/roles';
 import './RegisterPage.css';
 
 export function RegisterPage() {
+  const [, navigate] = useLocation();
   const t = uiText[loadLanguage()];
   const [showCelebration, setShowCelebration] = useState(false);
   const [selectedRole, setSelectedRole] = useState<AppRole | null>(null);
@@ -56,6 +57,7 @@ export function RegisterPage() {
         initialMode="signup"
         initialRole={selectedRole}
         isRoleLocked
+        onAuthSuccess={(role) => navigate(role === 'parent' ? '/parent' : '/')}
         onSignupSuccess={() => setShowCelebration(true)}
       />
       {showCelebration && (

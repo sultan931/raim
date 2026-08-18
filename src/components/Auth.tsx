@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { rememberRegisteredUser } from '../lib/authStatus';
 import { friendlyErrorMessage } from '../lib/friendlyError';
-import { saveCurrentProfile, type AppRole } from '../lib/roles';
+import { loadCurrentProfile, saveCurrentProfile, type AppRole } from '../lib/roles';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { AuthSignupFields } from './AuthSignupFields';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
@@ -11,6 +11,7 @@ type AuthProps = {
   initialMode?: 'signin' | 'signup';
   initialRole?: AppRole;
   isRoleLocked?: boolean;
+  onAuthSuccess?: (role: AppRole) => void;
   onSignupSuccess?: () => void;
 };
 
@@ -19,6 +20,7 @@ export function Auth({
   initialMode = 'signin',
   initialRole = 'kid',
   isRoleLocked = false,
+  onAuthSuccess,
   onSignupSuccess,
 }: AuthProps) {
   const [email, setEmail] = useState('');
@@ -51,12 +53,13 @@ export function Auth({
       if (error) setMessage(friendlyErrorMessage(error));
       else if (mode === 'signup') {
         await saveCurrentProfile(role, displayName);
-        setMessage('Готово! Проверь почту, если нужна подтверждалка.');
         rememberRegisteredUser();
         onSignupSuccess?.();
+        onAuthSuccess?.(role);
       } else {
+        const profile = await loadCurrentProfile();
         rememberRegisteredUser();
-        setMessage('Готово, ты вошёл в Jey diary.');
+        onAuthSuccess?.(profile?.role ?? 'kid');
       }
     } catch {
       setMessage(friendlyErrorMessage('network'));
