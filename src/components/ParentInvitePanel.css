@@ -1,0 +1,25 @@
+.parent-invite-panel {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 1px solid rgba(143, 199, 180, 0.22);
+  border-radius: 8px;
+  background: rgba(23, 29, 27, 0.72);
+}
+
+.parent-invite-panel h2 {
+  margin: 5px 0;
+  font-size: 20px;
+}
+
+.parent-invite-panel p,
+.parent-invite-panel small {
+  color: var(--soft);
+}
+
+.parent-invite-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

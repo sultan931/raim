@@ -25,3 +25,21 @@
 .google-button:hover {
   border-color: var(--mint);
 }
+
+.role-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.role-choice button {
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--soft);
+}
+
+.role-choice button.is-active {
+  border-color: var(--mint);
+  background: rgba(143, 199, 180, 0.14);
+  color: var(--ink);
+}

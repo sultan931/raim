@@ -4,6 +4,7 @@ import { ChatThread } from '../components/ChatThread';
 import { HomeHero } from '../components/HomeHero';
 import { JeyIntro } from '../components/JeyIntro';
 import { ParentHintCard } from '../components/ParentHintCard';
+import { ParentInvitePanel } from '../components/ParentInvitePanel';
 import { askJey } from '../lib/diaryAi';
 import { deleteRecording, saveRecording } from '../lib/audioStore';
 import { transcribeAudio } from '../lib/audioTranscription';
@@ -20,6 +21,7 @@ import { uiText, type Language } from '../lib/language';
 import { recognitionLanguages, shouldShowJeyIntro } from '../lib/homePageSettings';
 import type { PrivacyMode } from '../lib/diaryTypes';
 import { saveIfDiaryEntry } from '../lib/saveDiaryEntry';
+import { shareDiaryWithParents } from '../lib/parentSharing';
 import { useObjectUrl } from '../lib/useObjectUrl';
 import { createVoiceReply } from '../lib/voiceReply';
 import './HomePage.css';
@@ -76,6 +78,7 @@ export function HomePage() {
       const childMessage = createDiaryMessage('child', entryText, privacy, { audioId, photoUrl });
       setMessages((current) => [...current, childMessage]);
       const diarySave = saveIfDiaryEntry(entryText, privacy, language);
+      const parentShare = shareDiaryWithParents(entryText, privacy);
       setText('');
       setVoiceTranscript('');
       setPhotoUrl('');
@@ -85,6 +88,7 @@ export function HomePage() {
         ? createVoiceReply(language)
         : await askJey(entryText, privacy, language);
       await diarySave;
+      await parentShare;
       setMessages((current) => [
         ...current,
         createDiaryMessage('buddy', reply.text, 'mine'),
@@ -125,6 +129,7 @@ export function HomePage() {
 
       <section className="diary-layout">
         <div className="chat-column">
+          <ParentInvitePanel />
           <ChatThread audioUrls={audioUrls} labels={t} messages={messages} onDeleteMessage={handleDeleteMessage} />
           <ChatComposer
             canSend={canSend}

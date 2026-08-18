@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { rememberRegisteredUser } from '../lib/authStatus';
 import { friendlyErrorMessage } from '../lib/friendlyError';
+import { saveCurrentProfile, type AppRole } from '../lib/roles';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 import './Auth.css';
@@ -13,6 +14,8 @@ type AuthProps = {
 export function Auth({ onSignupSuccess }: AuthProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [role, setRole] = useState<AppRole>('kid');
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
@@ -29,15 +32,22 @@ export function Auth({ onSignupSuccess }: AuthProps) {
           ? supabase.auth.signUp({
               email,
               password,
-              options: { emailRedirectTo: window.location.origin },
+              options: {
+                emailRedirectTo: window.location.origin,
+                data: { display_name: displayName.trim(), role },
+              },
             })
           : supabase.auth.signInWithPassword({ email, password });
       const { error } = await fn;
       if (error) setMessage(friendlyErrorMessage(error));
       else if (mode === 'signup') {
+        await saveCurrentProfile(role, displayName);
         setMessage('Готово! Проверь почту, если нужна подтверждалка.');
         rememberRegisteredUser();
         onSignupSuccess?.();
+      } else {
+        rememberRegisteredUser();
+        setMessage('Готово, ты вошёл в Jey diary.');
       }
     } catch {
       setMessage(friendlyErrorMessage('network'));
@@ -74,6 +84,32 @@ export function Auth({ onSignupSuccess }: AuthProps) {
       </button>
       <div className="auth-divider">or</div>
       <form onSubmit={handleSubmit} className="form">
+        {mode === 'signup' && (
+          <>
+            <input
+              type="text"
+              placeholder="как тебя зовут"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+            <div className="role-choice" aria-label="Choose role">
+              <button
+                className={role === 'kid' ? 'is-active' : ''}
+                onClick={() => setRole('kid')}
+                type="button"
+              >
+                Kid
+              </button>
+              <button
+                className={role === 'parent' ? 'is-active' : ''}
+                onClick={() => setRole('parent')}
+                type="button"
+              >
+                Parent
+              </button>
+            </div>
+          </>
+        )}
         <input
           type="email"
           placeholder="email"

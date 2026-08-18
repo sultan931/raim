@@ -1,0 +1,97 @@
+.parent-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px 20px 72px;
+}
+
+.parent-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.parent-header h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(36px, 6vw, 60px);
+  line-height: 1;
+}
+
+.parent-header p,
+.parent-muted {
+  color: var(--soft);
+}
+
+.parent-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 16px;
+}
+
+.parent-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.parent-events,
+.parent-chat {
+  display: grid;
+  gap: 10px;
+}
+
+.parent-event,
+.parent-chat p {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--field);
+}
+
+.parent-event span {
+  color: var(--mint);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.parent-event p,
+.parent-event blockquote {
+  margin-top: 8px;
+  color: var(--soft);
+  line-height: 1.45;
+}
+
+.parent-event blockquote {
+  padding-left: 10px;
+  border-left: 3px solid var(--mint);
+}
+
+.from-parent {
+  justify-self: end;
+  max-width: 82%;
+}
+
+.from-jey {
+  justify-self: start;
+  max-width: 88%;
+}
+
+.parent-ask {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .parent-header,
+  .parent-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,13 +3,14 @@ import './MobileBottomNav.css';
 
 type NavItem = {
   href: string;
-  icon: 'home' | 'albums' | 'register';
+  icon: 'home' | 'albums' | 'parent' | 'register';
   label: string;
 };
 
 const navItems: NavItem[] = [
   { href: '/', icon: 'home', label: 'Jey' },
   { href: '/albums', icon: 'albums', label: 'Albums' },
+  { href: '/parent', icon: 'parent', label: 'Parent' },
   { href: '/register', icon: 'register', label: 'Register' },
 ];
 
