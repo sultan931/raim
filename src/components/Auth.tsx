@@ -3,20 +3,29 @@ import { rememberRegisteredUser } from '../lib/authStatus';
 import { friendlyErrorMessage } from '../lib/friendlyError';
 import { saveCurrentProfile, type AppRole } from '../lib/roles';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import { AuthSignupFields } from './AuthSignupFields';
 import { SupabaseSetupMessage } from './SupabaseSetupMessage';
 import './Auth.css';
 
 type AuthProps = {
+  initialMode?: 'signin' | 'signup';
+  initialRole?: AppRole;
+  isRoleLocked?: boolean;
   onSignupSuccess?: () => void;
 };
 
 // Вход и регистрация по email + паролю. Это пример — Codex поможет улучшить (Google-вход и т.д.).
-export function Auth({ onSignupSuccess }: AuthProps) {
+export function Auth({
+  initialMode = 'signin',
+  initialRole = 'kid',
+  isRoleLocked = false,
+  onSignupSuccess,
+}: AuthProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [role, setRole] = useState<AppRole>('kid');
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [role, setRole] = useState<AppRole>(initialRole);
+  const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -74,41 +83,28 @@ export function Auth({ onSignupSuccess }: AuthProps) {
   return (
     <section className="card">
       <h2>{mode === 'signin' ? 'Вход' : 'Регистрация'}</h2>
-      <button
-        className="google-button"
-        disabled={busy}
-        onClick={handleGoogleAuth}
-        type="button"
-      >
-        {busy ? 'Открываем вход...' : 'Continue with Google'}
-      </button>
-      <div className="auth-divider">or</div>
+      {mode === 'signin' && (
+        <>
+          <button
+            className="google-button"
+            disabled={busy}
+            onClick={handleGoogleAuth}
+            type="button"
+          >
+            {busy ? 'Открываем вход...' : 'Continue with Google'}
+          </button>
+          <div className="auth-divider">or</div>
+        </>
+      )}
       <form onSubmit={handleSubmit} className="form">
         {mode === 'signup' && (
-          <>
-            <input
-              type="text"
-              placeholder="как тебя зовут"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-            />
-            <div className="role-choice" aria-label="Choose role">
-              <button
-                className={role === 'kid' ? 'is-active' : ''}
-                onClick={() => setRole('kid')}
-                type="button"
-              >
-                Kid
-              </button>
-              <button
-                className={role === 'parent' ? 'is-active' : ''}
-                onClick={() => setRole('parent')}
-                type="button"
-              >
-                Parent
-              </button>
-            </div>
-          </>
+          <AuthSignupFields
+            displayName={displayName}
+            isRoleLocked={isRoleLocked}
+            role={role}
+            onDisplayNameChange={setDisplayName}
+            onRoleChange={setRole}
+          />
         )}
         <input
           type="email"

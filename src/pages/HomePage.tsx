@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'wouter';
 import { ChatComposer } from '../components/ChatComposer';
 import { ChatThread } from '../components/ChatThread';
 import { HomeHero } from '../components/HomeHero';
@@ -22,11 +23,13 @@ import { recognitionLanguages, shouldShowJeyIntro } from '../lib/homePageSetting
 import type { PrivacyMode } from '../lib/diaryTypes';
 import { saveIfDiaryEntry } from '../lib/saveDiaryEntry';
 import { shareDiaryWithParents } from '../lib/parentSharing';
+import { canUsePrivateActions } from '../lib/privateActions';
 import { useObjectUrl } from '../lib/useObjectUrl';
 import { createVoiceReply } from '../lib/voiceReply';
 import './HomePage.css';
 
 export function HomePage() {
+  const [, navigate] = useLocation();
   const [language, setLanguage] = useState<Language>(() => loadLanguage());
   const [messages, setMessages] = useState(() => loadInitialMessages());
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
@@ -59,6 +62,10 @@ export function HomePage() {
 
   async function handleSend() {
     if (!canSend || isSending) return;
+    if (!(await canUsePrivateActions())) {
+      navigate('/register');
+      return;
+    }
 
     setIsSending(true);
     try {

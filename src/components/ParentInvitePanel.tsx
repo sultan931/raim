@@ -58,10 +58,12 @@ export function ParentInvitePanel() {
         {inviteLink && (
           <>
             <button className="ghost" onClick={handleCopy} type="button">
-              Copy
+              <span className="invite-icon invite-icon--copy" aria-hidden="true" />
+              <span>Copy</span>
             </button>
             <button className="ghost" onClick={handleShare} type="button">
-              Share
+              <span className="invite-icon invite-icon--share" aria-hidden="true" />
+              <span>Share</span>
             </button>
           </>
         )}
