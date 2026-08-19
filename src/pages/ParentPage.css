@@ -30,6 +30,7 @@
 }
 
 .parent-panel {
+  min-width: 0;
   display: grid;
   align-content: start;
   gap: 14px;
@@ -41,12 +42,17 @@
 
 .parent-events,
 .parent-chat {
+  min-width: 0;
   display: grid;
   gap: 10px;
 }
 
 .parent-event,
 .parent-chat p {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -54,10 +60,16 @@
 }
 
 .parent-event span {
+  display: block;
+  margin-bottom: 6px;
   color: var(--mint);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
+}
+
+.parent-event strong {
+  display: block;
 }
 
 .parent-event p,
