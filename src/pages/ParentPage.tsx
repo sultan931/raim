@@ -61,6 +61,10 @@ export function ParentPage() {
     setIsThinking(false);
   }
 
+  function handleDeleteJeyMessage(messageIndex: number) {
+    setMessages((current) => current.filter((_, index) => index !== messageIndex));
+  }
+
   return (
     <main className="parent-page">
       <header className="parent-header">
@@ -102,6 +106,7 @@ export function ParentPage() {
             isLoading={isLoading}
             isThinking={isThinking}
             messages={messages}
+            onDeleteJeyMessage={handleDeleteJeyMessage}
           />
           <div className="parent-ask">
             <input

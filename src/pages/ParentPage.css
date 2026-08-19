@@ -48,7 +48,8 @@
 }
 
 .parent-event,
-.parent-chat p {
+.parent-chat > p,
+.parent-chat article {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -57,6 +58,30 @@
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--field);
+}
+
+.parent-chat article {
+  position: relative;
+}
+
+.parent-chat article p {
+  line-height: 1.45;
+}
+
+.parent-message-delete {
+  display: grid;
+  place-items: center;
+  width: fit-content;
+  height: 28px;
+  margin: 0 0 8px auto;
+  padding: 0 10px;
+  border: 1px solid rgba(216, 132, 95, 0.46);
+  border-radius: 8px;
+  background: rgba(13, 17, 16, 0.52);
+  color: #ffd8c4;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .parent-event span {

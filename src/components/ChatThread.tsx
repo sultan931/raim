@@ -45,19 +45,16 @@ export function ChatThread({
             {message.role === 'child' && (
               <div className="message-meta__actions">
                 <small>{getPrivacyLabel(message.privacy, labels)}</small>
-                <button
-                  aria-label={labels.deleteMessage}
-                  className="message-delete"
-                  onClick={() => onDeleteMessage(message.id)}
-                  title={labels.deleteMessage}
-                  type="button"
-                >
-                  ×
-                </button>
+                <DeleteButton label={labels.deleteMessage} onClick={() => onDeleteMessage(message.id)} />
               </div>
             )}
           </div>
           <p>{message.text}</p>
+          {message.role === 'buddy' && (
+            <div className="message-actions">
+              <DeleteButton label={labels.deleteMessage} onClick={() => onDeleteMessage(message.id)} text />
+            </div>
+          )}
           {message.photoUrl && (
             <img
               alt="Diary moment"
@@ -73,6 +70,26 @@ export function ChatThread({
         </article>
       ))}
     </section>
+  );
+}
+
+type DeleteButtonProps = {
+  label: string;
+  onClick: () => void;
+  text?: boolean;
+};
+
+function DeleteButton({ label, onClick, text = false }: DeleteButtonProps) {
+  return (
+    <button
+      aria-label={label}
+      className={text ? 'message-delete message-delete--text' : 'message-delete'}
+      onClick={onClick}
+      title={label}
+      type="button"
+    >
+      {text ? label : '×'}
+    </button>
   );
 }
 

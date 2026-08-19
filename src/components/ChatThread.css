@@ -54,6 +54,12 @@
   gap: 6px;
 }
 
+.message-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
 .message-delete {
   display: grid;
   place-items: center;
@@ -68,8 +74,23 @@
   line-height: 1;
 }
 
+.message-delete--text {
+  width: auto;
+  min-width: 0;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .message-delete:hover {
   border-color: var(--clay);
+  color: #ffd8c4;
+}
+
+.message-bubble.buddy .message-delete {
+  border-color: rgba(216, 132, 95, 0.46);
   color: #ffd8c4;
 }
 

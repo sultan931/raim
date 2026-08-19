@@ -74,6 +74,40 @@
   gap: 10px;
 }
 
+.album-day__date h2 {
+  color: var(--album-date-color, var(--ink));
+}
+
+.album-day__date--happy {
+  --album-date-color: #f5d86a;
+}
+
+.album-day__date--proud {
+  --album-date-color: #f6b85d;
+}
+
+.album-day__date--sad {
+  --album-date-color: #79bdf2;
+}
+
+.album-day__date--angry,
+.album-day__date--conflict {
+  --album-date-color: #ff8a72;
+}
+
+.album-day__date--anxious {
+  --album-date-color: #c8a7ff;
+}
+
+.album-day__date--lonely {
+  --album-date-color: #8fded4;
+}
+
+.album-day__date--tired,
+.album-day__date--neutral {
+  --album-date-color: #b8c1bb;
+}
+
 .album-day__title span {
   color: var(--soft);
 }

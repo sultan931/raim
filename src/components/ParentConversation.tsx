@@ -10,6 +10,7 @@ type ParentConversationProps = {
   isLoading: boolean;
   isThinking: boolean;
   messages: ParentConversationMessage[];
+  onDeleteJeyMessage: (messageIndex: number) => void;
 };
 
 export function ParentConversation({
@@ -17,6 +18,7 @@ export function ParentConversation({
   isLoading,
   isThinking,
   messages,
+  onDeleteJeyMessage,
 }: ParentConversationProps) {
   const sharedMessages = events.slice(0, 6).reverse();
 
@@ -33,9 +35,20 @@ export function ParentConversation({
         </p>
       ))}
       {messages.map((message, index) => (
-        <p className={message.role === 'jey' ? 'from-jey' : 'from-parent'} key={index}>
-          {message.text}
-        </p>
+        <article className={message.role === 'jey' ? 'from-jey' : 'from-parent'} key={index}>
+          {message.role === 'jey' && (
+            <button
+              aria-label="Удалить сообщение Jey"
+              className="parent-message-delete"
+              onClick={() => onDeleteJeyMessage(index)}
+              title="Удалить сообщение Jey"
+              type="button"
+            >
+              Удалить
+            </button>
+          )}
+          <p>{message.text}</p>
+        </article>
       ))}
       {isThinking && <p className="from-jey">Jey думает...</p>}
     </div>

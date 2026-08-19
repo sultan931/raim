@@ -41,7 +41,7 @@ export function AlbumsPage() {
           {albums.map((album) => (
             <section className="album-day" key={album.date}>
               <div className="album-day__title">
-                <div className="album-day__date">
+                <div className={`album-day__date album-day__date--${album.sphere.emotion}`}>
                   <h2>{formatDate(album.date, language)}</h2>
                   <MoodFace emotion={album.sphere.emotion} />
                 </div>
