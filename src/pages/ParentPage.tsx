@@ -5,17 +5,17 @@ import {
   type ParentConversationMessage,
 } from '../components/ParentConversation';
 import { askParentJey } from '../lib/parentAi';
-import { loadFamilyLinks } from '../lib/parentLinks';
-import { loadParentSharedEvents, type ParentSharedEvent } from '../lib/parentSharing';
 import { loadLanguage } from '../lib/diaryStorage';
 import { useCurrentProfile } from '../lib/useCurrentProfile';
+import { useParentSharedEvents } from '../lib/useParentSharedEvents';
 import './ParentPage.css';
 
 export function ParentPage() {
   const [, navigate] = useLocation();
   const language = loadLanguage();
   const { isLoading: isProfileLoading, profile } = useCurrentProfile();
-  const [events, setEvents] = useState<ParentSharedEvent[]>([]);
+  const isParent = profile?.role === 'parent';
+  const { events, isLoading } = useParentSharedEvents(!isProfileLoading && isParent);
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ParentConversationMessage[]>([
     {
@@ -23,7 +23,6 @@ export function ParentPage() {
       text: 'Я покажу только то, чем ребёнок сам поделился. Можешь спросить, как мягко поддержать его сегодня.',
     },
   ]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isThinking, setIsThinking] = useState(false);
 
   useEffect(() => {
@@ -36,16 +35,6 @@ export function ParentPage() {
       navigate('/register');
       return;
     }
-
-    async function load() {
-      setIsLoading(true);
-      const links = await loadFamilyLinks();
-      const childId = links[0]?.child_id;
-      setEvents(await loadParentSharedEvents(childId));
-      setIsLoading(false);
-    }
-
-    void load();
   }, [isProfileLoading, navigate, profile?.role]);
 
   const visibleEvents = useMemo(() => events.slice(0, 6), [events]);
