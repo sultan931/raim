@@ -82,6 +82,22 @@
   max-width: 88%;
 }
 
+.from-child {
+  justify-self: start;
+  max-width: 88%;
+  border-color: rgba(143, 199, 180, 0.42);
+  background: #15201d;
+}
+
+.from-child span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--mint);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .parent-ask {
   display: grid;
   grid-template-columns: 1fr auto;

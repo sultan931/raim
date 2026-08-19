@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
+import {
+  ParentConversation,
+  type ParentConversationMessage,
+} from '../components/ParentConversation';
 import { askParentJey } from '../lib/parentAi';
 import { loadFamilyLinks } from '../lib/parentLinks';
 import { loadParentSharedEvents, type ParentSharedEvent } from '../lib/parentSharing';
@@ -7,18 +11,13 @@ import { loadLanguage } from '../lib/diaryStorage';
 import { useCurrentProfile } from '../lib/useCurrentProfile';
 import './ParentPage.css';
 
-type ChatMessage = {
-  role: 'parent' | 'jey';
-  text: string;
-};
-
 export function ParentPage() {
   const [, navigate] = useLocation();
   const language = loadLanguage();
   const { isLoading: isProfileLoading, profile } = useCurrentProfile();
   const [events, setEvents] = useState<ParentSharedEvent[]>([]);
   const [question, setQuestion] = useState('');
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<ParentConversationMessage[]>([
     {
       role: 'jey',
       text: 'Я покажу только то, чем ребёнок сам поделился. Можешь спросить, как мягко поддержать его сегодня.',
@@ -109,14 +108,12 @@ export function ParentPage() {
 
         <div className="parent-panel">
           <h2>Ask Jey</h2>
-          <div className="parent-chat">
-            {messages.map((message, index) => (
-              <p className={message.role === 'jey' ? 'from-jey' : 'from-parent'} key={index}>
-                {message.text}
-              </p>
-            ))}
-            {isThinking && <p className="from-jey">Jey думает...</p>}
-          </div>
+          <ParentConversation
+            events={events}
+            isLoading={isLoading}
+            isThinking={isThinking}
+            messages={messages}
+          />
           <div className="parent-ask">
             <input
               aria-label="Parent question"
