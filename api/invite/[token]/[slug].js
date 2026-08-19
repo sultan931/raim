@@ -1,10 +1,13 @@
 export default function handler(request, response) {
   const { token = '', slug = '' } = request.query;
-  const childName = getChildName(slug);
-  const appUrl = `https://raim-bice.vercel.app/invite/${encodeURIComponent(token)}/${encodeURIComponent(slug)}`;
+  const cleanToken = Array.isArray(token) ? token[0] : token;
+  const cleanSlug = Array.isArray(slug) ? slug[0] : slug;
+  const childName = getChildName(cleanSlug);
+  const appUrl = `/invite/${encodeURIComponent(cleanToken)}/${encodeURIComponent(cleanSlug)}`;
+  const publicAppUrl = getPublicUrl(request, appUrl);
   const title = `${childName} invites you`;
   const description = `${childName} invites you to be their parent in Jey diary.`;
-  const imageUrl = 'https://raim-bice.vercel.app/telegram-og-image.jpg';
+  const imageUrl = `${getOrigin(request)}/telegram-og-image.jpg`;
   const userAgent = request.headers['user-agent'] ?? '';
 
   if (!isPreviewBot(userAgent)) {
@@ -19,6 +22,7 @@ export default function handler(request, response) {
 <html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=${escapeHtml(publicAppUrl)}" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
@@ -28,7 +32,7 @@ export default function handler(request, response) {
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:url" content="${escapeHtml(appUrl)}" />
+    <meta property="og:url" content="${escapeHtml(publicAppUrl)}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Jey diary" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -38,6 +42,8 @@ export default function handler(request, response) {
   </head>
   <body>
     <p>${escapeHtml(description)}</p>
+    <p><a href="${escapeHtml(publicAppUrl)}">Open invite</a></p>
+    <script>window.location.replace(${JSON.stringify(publicAppUrl)});</script>
   </body>
 </html>`);
 }
@@ -50,6 +56,17 @@ function getChildName(slug) {
     .split(/\s+/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+function getOrigin(request) {
+  const host = request.headers['x-forwarded-host'] ?? request.headers.host;
+  const protocol = request.headers['x-forwarded-proto'] ?? 'https';
+
+  return `${protocol}://${host}`;
+}
+
+function getPublicUrl(request, path) {
+  return `${getOrigin(request)}${path}`;
 }
 
 function isPreviewBot(userAgent) {
