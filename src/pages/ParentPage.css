@@ -23,6 +23,12 @@
   color: var(--soft);
 }
 
+.parent-header__actions {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+
 .parent-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -146,5 +152,9 @@
   .parent-grid {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .parent-header__actions {
+    justify-items: start;
   }
 }

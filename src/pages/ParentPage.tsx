@@ -4,15 +4,17 @@ import {
   ParentConversation,
   type ParentConversationMessage,
 } from '../components/ParentConversation';
+import { LanguageSelector } from '../components/LanguageSelector';
 import { askParentJey } from '../lib/parentAi';
-import { loadLanguage } from '../lib/diaryStorage';
+import { languageStorageKey, loadLanguage } from '../lib/diaryStorage';
+import type { Language } from '../lib/language';
 import { useCurrentProfile } from '../lib/useCurrentProfile';
 import { useParentSharedEvents } from '../lib/useParentSharedEvents';
 import './ParentPage.css';
 
 export function ParentPage() {
   const [, navigate] = useLocation();
-  const language = loadLanguage();
+  const [language, setLanguage] = useState<Language>(() => loadLanguage());
   const { isLoading: isProfileLoading, profile } = useCurrentProfile();
   const isParent = profile?.role === 'parent';
   const { events, isLoading } = useParentSharedEvents(!isProfileLoading && isParent);
@@ -36,6 +38,10 @@ export function ParentPage() {
       return;
     }
   }, [isProfileLoading, navigate, profile?.role]);
+
+  useEffect(() => {
+    localStorage.setItem(languageStorageKey, language);
+  }, [language]);
 
   const visibleEvents = useMemo(() => events.slice(0, 6), [events]);
 
@@ -73,9 +79,12 @@ export function ParentPage() {
           <h1>Parent chat with Jey</h1>
           <p>Здесь видны только mood/share данные, которые ребёнок разрешил показать.</p>
         </div>
-        <Link className="back-link" href="/">
-          Diary
-        </Link>
+        <div className="parent-header__actions">
+          <LanguageSelector value={language} onChange={setLanguage} />
+          <Link className="back-link" href="/">
+            Diary
+          </Link>
+        </div>
       </header>
 
       <section className="parent-grid">
